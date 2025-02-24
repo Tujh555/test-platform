@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 
 interface ScreenComponent<A, S, E> : Screen {
     @Composable
@@ -56,7 +56,7 @@ abstract class BaseModel<A, S, E>(initial: S) : Model<A, S, E> {
     protected val _state = MutableStateFlow(initial)
     protected val _event = Channel<E>(Channel.UNLIMITED)
     override val state = _state.asStateFlow()
-    override val event = _event.consumeAsFlow()
+    override val event = _event.receiveAsFlow()
 
     abstract override fun onAction(action: A)
 

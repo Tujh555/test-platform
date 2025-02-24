@@ -1,18 +1,14 @@
-package com.example.test_platform.presentation.screens.signin
+package com.example.test_platform.presentation.screens.signup
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,19 +28,20 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.test_platform.presentation.components.PasswordTextField
 import com.example.test_platform.presentation.components.Scaffold
 import com.example.test_platform.presentation.components.defaultScaffoldModifier
-import com.example.test_platform.presentation.screens.signup.SignUpScreen
 import com.example.test_platform.presentation.theme.QuizTheme
 
 private val shape = RoundedCornerShape(8.dp)
 
 @Composable
-fun SignInScreenContent(state: SignInScreen.State, onAction: (SignInScreen.Action) -> Unit) {
+fun SignUpScreenContent(state: SignUpScreen.State, onAction: (SignUpScreen.Action) -> Unit) {
+    val navigator = LocalNavigator.currentOrThrow
+
     Scaffold(
-        modifier = defaultScaffoldModifier.padding(bottom = 20.dp).imePadding(),
-        title = "Welcome back!",
-        isBackVisible = false,
+        modifier = defaultScaffoldModifier.padding(bottom = 30.dp),
+        title = "Register to get started",
+        isBackVisible = true,
+        back = { navigator.pop() }
     ) {
-        val navigator = LocalNavigator.currentOrThrow
         val textFieldColors = OutlinedTextFieldDefaults.colors().copy(
             focusedIndicatorColor = QuizTheme.border,
             unfocusedIndicatorColor = QuizTheme.border.copy(alpha = 0.75f),
@@ -58,7 +55,7 @@ fun SignInScreenContent(state: SignInScreen.State, onAction: (SignInScreen.Actio
 
         OutlinedTextField(
             value = state.email,
-            onValueChange = { onAction(SignInScreen.Action.Email(it)) },
+            onValueChange = { onAction(SignUpScreen.Action.Email(it)) },
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(text = "Email") },
             colors = textFieldColors,
@@ -72,17 +69,30 @@ fun SignInScreenContent(state: SignInScreen.State, onAction: (SignInScreen.Actio
             text = state.password,
             colors = textFieldColors,
             shape = shape,
-            onValueChange = { onAction(SignInScreen.Action.Password(it)) },
+            error = state.isPasswordMatches.not(),
+            onValueChange = { onAction(SignUpScreen.Action.Password(it)) },
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        PasswordTextField(
+            modifier = Modifier.fillMaxWidth(),
+            text = state.passwordConfirm,
+            colors = textFieldColors,
+            shape = shape,
+            error = state.isPasswordMatches.not(),
+            placeholder = "Confirm password",
+            onValueChange = { onAction(SignUpScreen.Action.PasswordConfirm(it)) },
         )
 
         Spacer(modifier = Modifier.height(50.dp))
 
         Button(
             modifier = Modifier.fillMaxWidth().height(48.dp),
-            onClick = { onAction(SignInScreen.Action.Login(navigator)) },
+            onClick = { onAction(SignUpScreen.Action.Register(navigator)) },
             content = {
                 AnimatedContent(
-                    targetState = state.loginInProgress,
+                    targetState = state.isLoading,
                     transitionSpec = {
                         fadeIn(tween(400)) togetherWith fadeOut(tween(200))
                     }
@@ -97,7 +107,7 @@ fun SignInScreenContent(state: SignInScreen.State, onAction: (SignInScreen.Actio
                                 color = Color.White,
                             )
                         } else {
-                            Text(text = "Login", color = Color.White)
+                            Text(text = "Register", color = Color.White)
                         }
                     }
                 }
@@ -109,19 +119,5 @@ fun SignInScreenContent(state: SignInScreen.State, onAction: (SignInScreen.Actio
                 contentColor = Color.White,
             ),
         )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(text = "Don't have an account? ", color = Color.Black)
-            Text(
-                modifier = Modifier.clickable { navigator.push(SignUpScreen()) },
-                text = "Register now",
-                color = QuizTheme.darkBlue
-            )
-        }
     }
 }

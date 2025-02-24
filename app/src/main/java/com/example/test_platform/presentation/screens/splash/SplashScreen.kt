@@ -1,5 +1,8 @@
 package com.example.test_platform.presentation.screens.splash
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseInOutBack
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,8 +13,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -37,7 +42,16 @@ class SplashScreen : StateComponent<Nothing, Boolean?> {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val angle = remember { Animatable(0f) }
+            LaunchedEffect(Unit) {
+                angle.animateTo(
+                    targetValue = 360f,
+                    animationSpec = tween(durationMillis = 1000, easing = EaseInOutBack)
+                )
+            }
+
             Image(
+                modifier = Modifier.size(128.dp).rotate(angle.value),
                 painter = painterResource(R.drawable.img_logo),
                 contentDescription = null
             )

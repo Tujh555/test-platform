@@ -2,9 +2,8 @@ package com.example.test_platform.presentation.screens.splash
 
 import com.example.test_platform.domain.user.ReactiveUser
 import com.example.test_platform.presentation.base.BaseStateModel
-import kotlinx.coroutines.async
+import com.example.test_platform.withMinDelay
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -22,11 +21,12 @@ class SplashModel @Inject constructor(
 
     private suspend fun loadUser() {
         coroutineScope {
-            val user = async {
-                withTimeoutOrNull(1000) { reactiveUser.filterNotNull().first() }
+            val user = withMinDelay(1100) {
+                withTimeoutOrNull(1000) {
+                    reactiveUser.filterNotNull().first()
+                }
             }
-            delay(1000)
-            _state.value = user.await() != null
+            _state.value = user != null
         }
     }
 }

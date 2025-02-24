@@ -9,7 +9,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -31,5 +30,5 @@ class ApiProvider {
     }
 
     @Provides
-    fun authApi(retrofit: Retrofit): AuthApi = retrofit.create()
+    fun authApi(retrofit: Retrofit): AuthApi = AuthApi.Mock
 }

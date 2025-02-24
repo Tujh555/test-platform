@@ -19,4 +19,21 @@ object QuizTheme {
     val lightGray = Color(0xFFE1E1E2)
     val yellow = Color(0xFFFFD54B)
     val border = Color(0xFFE8ECF4)
+
+    val allColors = listOf(
+        lightBlue2,
+        lightBlue,
+        blue,
+        blue2,
+        darkBlue,
+        violet,
+        darkViolet,
+        pink,
+        pink2,
+        darkPink,
+        red,
+        darkGray,
+        lightGray,
+        yellow
+    )
 }

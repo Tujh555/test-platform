@@ -1,13 +1,14 @@
-package com.example.test_platform.data.di
+package com.example.test_platform.data
 
 import android.content.Context
 import com.example.test_platform.data.auth.AuthRepositoryImpl
 import com.example.test_platform.data.dto.UserDto
 import com.example.test_platform.data.store.Store
 import com.example.test_platform.data.store.jsonStore
-import com.example.test_platform.data.store.preferencesStore
 import com.example.test_platform.data.store.stringStore
+import com.example.test_platform.data.user.UserFlow
 import com.example.test_platform.domain.auth.AuthRepository
+import com.example.test_platform.domain.user.ReactiveUser
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -25,6 +26,10 @@ import javax.inject.Singleton
 interface DataModule {
     @Binds
     fun auth(impl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    @Singleton
+    fun user(flow: UserFlow): ReactiveUser
 
     companion object {
         @Provides

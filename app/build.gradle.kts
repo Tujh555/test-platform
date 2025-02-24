@@ -21,8 +21,8 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        all {
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -39,6 +39,10 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+composeCompiler {
+    enableStrongSkippingMode = true
 }
 
 dependencies {
