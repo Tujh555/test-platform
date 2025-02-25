@@ -1,6 +1,7 @@
 package com.example.test_platform.presentation.base
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 
+@Stable
 interface ScreenComponent<A, S, E> : Screen {
     @Composable
     override fun Content() {
