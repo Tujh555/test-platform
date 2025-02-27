@@ -2,6 +2,8 @@ package com.example.test_platform.presentation.components.tabs
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,11 +32,16 @@ private val unselected = Color(0xFF6D6D6D)
 
 @Composable
 fun BottomNavigationItem(modifier: Modifier = Modifier, tab: TabComponent<*, *>) {
-    val isSelected = LocalTabNavigator.current.current == tab
+    val navigator = LocalTabNavigator.current
+    val isSelected = navigator.current == tab
     val title = tab.title
     val iconRes = tab.icon(isSelected)
 
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         val backgroundColor by animateColorAsState(
             targetValue = if (isSelected) QuizTheme.blue else Color.White
         )
@@ -44,6 +52,11 @@ fun BottomNavigationItem(modifier: Modifier = Modifier, tab: TabComponent<*, *>)
             modifier = Modifier
                 .clip(CircleShape)
                 .background(backgroundColor, CircleShape)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = { navigator.current = tab }
+                )
                 .padding(horizontal = 20.dp, vertical = 4.dp),
             contentAlignment = Alignment.Center
         ) {
