@@ -13,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,7 +64,8 @@ fun Scaffold(
                     modifier = Modifier.weight(1f),
                     text = title,
                     fontSize = 32.sp,
-                    color = Color.Black
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
                 )
             }
         },

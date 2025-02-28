@@ -2,6 +2,10 @@ package com.example.test_platform.di
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.hilt.ScreenModelKey
+import com.example.test_platform.presentation.screens.main.home.HomeTabModel
+import com.example.test_platform.presentation.screens.main.profile.ProfileTabModel
+import com.example.test_platform.presentation.screens.main.quizzes.QuizzesTabModel
+import com.example.test_platform.presentation.screens.main.search.SearchTabModel
 import com.example.test_platform.presentation.screens.signin.SignInModel
 import com.example.test_platform.presentation.screens.signup.SignUpModel
 import com.example.test_platform.presentation.screens.splash.SplashModel
@@ -28,4 +32,24 @@ interface PresentationModule {
     @IntoMap
     @ScreenModelKey(SignUpModel::class)
     fun singUp(model: SignUpModel): ScreenModel
+
+    @Binds
+    @IntoMap
+    @ScreenModelKey(HomeTabModel::class)
+    fun home(model: HomeTabModel): ScreenModel
+
+    @Binds
+    @IntoMap
+    @ScreenModelKey(ProfileTabModel::class)
+    fun profile(model: ProfileTabModel): ScreenModel
+
+    @Binds
+    @IntoMap
+    @ScreenModelKey(QuizzesTabModel::class)
+    fun quizzes(model: QuizzesTabModel): ScreenModel
+
+    @Binds
+    @IntoMap
+    @ScreenModelKey(SearchTabModel::class)
+    fun search(model: SearchTabModel): ScreenModel
 }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -35,7 +33,9 @@ fun BottomNavigationItem(modifier: Modifier = Modifier, tab: TabComponent<*, *>)
     val navigator = LocalTabNavigator.current
     val isSelected = navigator.current == tab
     val title = tab.title
-    val iconRes = tab.icon(isSelected)
+    val iconRes = tab.icons.run {
+        if (isSelected) selected else unselected
+    }
 
     Column(
         modifier = modifier,

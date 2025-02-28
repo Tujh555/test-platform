@@ -10,8 +10,6 @@ data class UserDto(
     val avatar: String?,
     @SerializedName("name")
     val name: String,
-    @SerializedName("country_code")
-    val countryCode: String?
 )
 
-fun UserDto.toDomain() = User(id, avatar, name, countryCode)
+fun UserDto.toDomain() = User(id, avatar, name)

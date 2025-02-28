@@ -1,29 +1,27 @@
 package com.example.test_platform.presentation.components.tabs
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import android.R as AndroidR
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +32,7 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.example.test_platform.R
+import com.example.test_platform.presentation.base.IconPair
 import com.example.test_platform.presentation.base.Model
 import com.example.test_platform.presentation.base.TabComponent
 import com.example.test_platform.presentation.theme.QuizTheme
@@ -43,8 +42,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
 
 private val shape = RoundedCornerShape(
-    topStart = 12.dp,
-    topEnd = 12.dp
+    topStart = 16.dp,
+    topEnd = 16.dp
 )
 
 @Composable
@@ -56,31 +55,29 @@ fun BottomNavigationBar(
 ) {
     Box(
         modifier = modifier
-            .shadow(elevation = 10.dp, shape = shape, clip = false)
-            .background(color = Color.White, shape = shape),
+            .shadow(elevation = 32.dp, shape = shape, clip = false)
+            .background(color = Color.White, shape = shape)
+            .padding(horizontal = 8.dp)
+            .padding(top = 8.dp)
+            .navigationBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
-        Box(
+        FloatingActionButton(
             modifier = Modifier
+                .size(fabSize)
                 .offset {
                     val y = fabSize.roundToPx() / 2
                     IntOffset(0, -y)
-                }
-                .size(fabSize)
-                .clip(CircleShape)
-                .background(QuizTheme.darkBlue)
-                .clickable(
-                    indication = rememberRipple(radius = fabSize / 2),
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = onFabClick
-                ),
-            contentAlignment = Alignment.Center
+                },
+            shape = CircleShape,
+            containerColor = QuizTheme.blue,
+            contentColor = Color.White,
+            onClick = onFabClick
         ) {
             Icon(
                 modifier = Modifier.size(24.dp),
                 imageVector = Icons.Filled.Add,
                 contentDescription = null,
-                tint = Color.White
             )
         }
 
@@ -115,8 +112,10 @@ private fun previewTab(index: Int) = object : TabComponent<Any, Any> {
     override fun Content(state: Any, onAction: (Any) -> Unit) = Unit
 
     override val title: String = "Tab $index"
-
-    override fun icon(selected: Boolean): Int = R.drawable.ic_launcher_foreground
+    override val icons: IconPair = IconPair(
+        R.drawable.ic_launcher_foreground,
+        R.drawable.ic_launcher_foreground
+    )
 
     @Composable
     override fun model(): Model<Any, Any, Nothing> = object : Model<Any, Any, Nothing> {

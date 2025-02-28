@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class UserFlow @Inject constructor(private val store: Store<UserDto>) : ReactiveUser, Flow<User?> by store.user()
+class UserFlow @Inject constructor(
+    private val store: Store<UserDto>
+) : ReactiveUser, Flow<User?> by store.user()
 
 private fun Store<UserDto>.user() = data.map { it?.toDomain() }

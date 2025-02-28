@@ -31,6 +31,18 @@ import com.example.test_platform.presentation.components.defaultScaffoldModifier
 import com.example.test_platform.presentation.theme.QuizTheme
 
 private val shape = RoundedCornerShape(8.dp)
+@Composable
+fun onCreamTextFieldColors() = OutlinedTextFieldDefaults.colors().copy(
+    focusedIndicatorColor = QuizTheme.border,
+    unfocusedIndicatorColor = QuizTheme.border.copy(alpha = 0.75f),
+    focusedTextColor = Color.Black,
+    unfocusedTextColor = Color.Black.copy(alpha = 0.75f),
+    focusedContainerColor = Color.White,
+    unfocusedContainerColor = Color.White,
+    disabledContainerColor = Color.White,
+    errorContainerColor = Color.White,
+)
+
 
 @Composable
 fun SignUpScreenContent(state: SignUpScreen.State, onAction: (SignUpScreen.Action) -> Unit) {
@@ -42,17 +54,7 @@ fun SignUpScreenContent(state: SignUpScreen.State, onAction: (SignUpScreen.Actio
         isBackVisible = true,
         back = { navigator.pop() }
     ) {
-        val textFieldColors = OutlinedTextFieldDefaults.colors().copy(
-            focusedIndicatorColor = QuizTheme.border,
-            unfocusedIndicatorColor = QuizTheme.border.copy(alpha = 0.75f),
-            focusedTextColor = Color.Black,
-            unfocusedTextColor = Color.Black.copy(alpha = 0.75f),
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            disabledContainerColor = Color.White,
-            errorContainerColor = Color.White,
-        )
-
+        val textFieldColors = onCreamTextFieldColors()
         OutlinedTextField(
             value = state.email,
             onValueChange = { onAction(SignUpScreen.Action.Email(it)) },

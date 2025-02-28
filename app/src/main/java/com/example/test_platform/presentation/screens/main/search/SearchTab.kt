@@ -1,4 +1,4 @@
-package com.example.test_platform.presentation.screens.main.home
+package com.example.test_platform.presentation.screens.main.search
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,27 +13,27 @@ import com.example.test_platform.R
 import com.example.test_platform.presentation.base.IconPair
 import com.example.test_platform.presentation.base.TabComponent
 
-class HomeTab : TabComponent<HomeTab.Action, HomeTab.State> {
+class SearchTab : TabComponent<SearchTab.Action, SearchTab.State> {
     @Immutable
     data class State(val stub: String = "")
 
     @Immutable
     sealed interface Action
 
-    override val title: String = "Home"
+    override val title: String = "Search"
     override val icons: IconPair = IconPair(
-        selected = R.drawable.ic_home_selected,
-        unselected = R.drawable.ic_home_unselected
+        selected = R.drawable.ic_search_selected,
+        unselected = R.drawable.ic_search_unselected
     )
 
     @Composable
     @NonRestartableComposable
     override fun Content(state: State, onAction: (Action) -> Unit) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Home")
+            Text("Search")
         }
     }
 
     @Composable
-    override fun model(): HomeTabModel = getScreenModel()
+    override fun model(): SearchTabModel = getScreenModel()
 }

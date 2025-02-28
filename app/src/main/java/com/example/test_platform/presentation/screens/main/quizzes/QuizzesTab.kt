@@ -1,4 +1,4 @@
-package com.example.test_platform.presentation.screens.main.home
+package com.example.test_platform.presentation.screens.main.quizzes
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,29 +11,30 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.hilt.getScreenModel
 import com.example.test_platform.R
 import com.example.test_platform.presentation.base.IconPair
+import com.example.test_platform.presentation.base.Model
 import com.example.test_platform.presentation.base.TabComponent
 
-class HomeTab : TabComponent<HomeTab.Action, HomeTab.State> {
+class QuizzesTab : TabComponent<QuizzesTab.Action, QuizzesTab.State> {
     @Immutable
     data class State(val stub: String = "")
 
     @Immutable
     sealed interface Action
 
-    override val title: String = "Home"
+    override val title: String = "Quizzes"
     override val icons: IconPair = IconPair(
-        selected = R.drawable.ic_home_selected,
-        unselected = R.drawable.ic_home_unselected
+        selected = R.drawable.ic_quizes_selected,
+        unselected = R.drawable.ic_quizes_unselected
     )
 
     @Composable
     @NonRestartableComposable
     override fun Content(state: State, onAction: (Action) -> Unit) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Home")
+            Text("Quizzes")
         }
     }
 
     @Composable
-    override fun model(): HomeTabModel = getScreenModel()
+    override fun model(): QuizzesTabModel = getScreenModel()
 }

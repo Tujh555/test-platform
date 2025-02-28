@@ -33,6 +33,7 @@ import com.example.test_platform.presentation.components.PasswordTextField
 import com.example.test_platform.presentation.components.Scaffold
 import com.example.test_platform.presentation.components.defaultScaffoldModifier
 import com.example.test_platform.presentation.screens.signup.SignUpScreen
+import com.example.test_platform.presentation.screens.signup.onCreamTextFieldColors
 import com.example.test_platform.presentation.theme.QuizTheme
 
 private val shape = RoundedCornerShape(8.dp)
@@ -45,16 +46,7 @@ fun SignInScreenContent(state: SignInScreen.State, onAction: (SignInScreen.Actio
         isBackVisible = false,
     ) {
         val navigator = LocalNavigator.currentOrThrow
-        val textFieldColors = OutlinedTextFieldDefaults.colors().copy(
-            focusedIndicatorColor = QuizTheme.border,
-            unfocusedIndicatorColor = QuizTheme.border.copy(alpha = 0.75f),
-            focusedTextColor = Color.Black,
-            unfocusedTextColor = Color.Black.copy(alpha = 0.75f),
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            disabledContainerColor = Color.White,
-            errorContainerColor = Color.White,
-        )
+        val textFieldColors = onCreamTextFieldColors()
 
         OutlinedTextField(
             value = state.email,

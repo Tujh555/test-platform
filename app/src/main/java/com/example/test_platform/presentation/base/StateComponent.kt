@@ -15,5 +15,3 @@ interface StateModel<A, S> : Model<A, S, Nothing> {
     override val event: Flow<Nothing>
         get() = emptyFlow()
 }
-
-abstract class BaseStateModel<A, S>(initial: S) : BaseModel<A, S, Nothing>(initial)
