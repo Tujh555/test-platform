@@ -1,12 +1,11 @@
 package com.example.test_platform.presentation.screens.main.profile
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.example.test_platform.domain.user.ProfileRepository
 import com.example.test_platform.domain.user.ReactiveUser
 import com.example.test_platform.domain.user.User
 import com.example.test_platform.presentation.base.StateHolder
 import com.example.test_platform.presentation.base.StateModel
-import com.example.test_platform.presentation.base.io
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalMaterial3Api::class)
 class ProfileTabModel @Inject constructor(
     private val reactiveUser: ReactiveUser,
 ) : StateModel<ProfileTab.Action, ProfileTab.State>,
@@ -36,17 +36,18 @@ class ProfileTabModel @Inject constructor(
 
             ProfileTab.Action.Save -> {
                 screenModelScope.launch {
-                    update { it.copy(nameSending = true) }
+                    state.value.pullToRefreshState.startRefresh()
                     delay(500)
-                    update { it.copy(nameSending = false) }
+                    state.value.pullToRefreshState.endRefresh()
+                    update { it.copy(finishVisible = false) }
                 }
             }
 
             is ProfileTab.Action.UploadAvatar -> {
                 screenModelScope.launch {
-                    update { it.copy(avatarSending = true) }
+                    state.value.pullToRefreshState.startRefresh()
                     delay(1000)
-                    update { it.copy(avatarSending = false) }
+                    state.value.pullToRefreshState.endRefresh()
                 }
             }
         }

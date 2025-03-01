@@ -4,7 +4,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,18 +19,20 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,11 +42,14 @@ import com.example.test_platform.presentation.components.screenPadding
 import com.example.test_platform.presentation.screens.signup.onCreamTextFieldColors
 import com.example.test_platform.presentation.theme.QuizTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileTabContent(state: ProfileTab.State, onAction: (ProfileTab.Action) -> Unit) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .imePadding()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -71,25 +79,27 @@ fun ProfileTabContent(state: ProfileTab.State, onAction: (ProfileTab.Action) -> 
                         onAction(ProfileTab.Action.UploadAvatar(uri))
                     }
                 }
-                Box(contentAlignment = Alignment.Center) {
-                    UserAvatar(
-                        modifier = Modifier.size(128.dp),
-                        url = state.avatar,
-                        userId = state.id,
-                        onClick = {
-                            if (state.avatarSending.not()) {
-                                val request = PickVisualMediaRequest(
-                                    ActivityResultContracts.PickVisualMedia.ImageOnly
-                                )
-                                galleryLauncher.launch(request)
-                            }
-                        }
-                    )
+                UserAvatar(
+                    modifier = Modifier.size(128.dp),
+                    url = state.avatar,
+                    userId = state.id,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
 
-                    this@Column.AnimatedVisibility(visible = state.avatarSending) {
-                        CircularProgressIndicator(modifier = Modifier.size(32.dp))
-                    }
-                }
+                val isRefreshing = state.pullToRefreshState.isRefreshing
+                Text(
+                    modifier = Modifier.clip(CircleShape).clickable {
+                        if (isRefreshing.not()) {
+                            val request = PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                            )
+                            galleryLauncher.launch(request)
+                        }
+                    },
+                    text = "Choose photo",
+                    color = QuizTheme.blue
+                )
+
                 Spacer(modifier = Modifier.height(12.dp))
                 OutlinedTextField(
                     value = state.name,
@@ -97,16 +107,17 @@ fun ProfileTabContent(state: ProfileTab.State, onAction: (ProfileTab.Action) -> 
                     modifier = Modifier.fillMaxWidth(),
                     colors = onCreamTextFieldColors(),
                     shape = RoundedCornerShape(8.dp),
-                    enabled = state.nameSending.not()
+                    enabled = isRefreshing.not()
                 )
             }
         }
 
         AnimatedVisibility(
-            modifier = Modifier.align(Alignment.BottomEnd).padding(start = 12.dp, bottom = 12.dp),
+            modifier = Modifier.align(Alignment.BottomEnd),
             visible = state.finishVisible
         ) {
             FloatingActionButton(
+                modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
                 onClick = { onAction(ProfileTab.Action.Save) },
                 containerColor = QuizTheme.lightBlue,
                 contentColor = Color.White
@@ -117,6 +128,20 @@ fun ProfileTabContent(state: ProfileTab.State, onAction: (ProfileTab.Action) -> 
                     contentDescription = null
                 )
             }
+        }
+
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.TopCenter),
+            visible = state.pullToRefreshState.isRefreshing,
+            enter = slideInVertically { -it },
+            exit = slideOutVertically { -it }
+        ) {
+            PullToRefreshContainer(
+                state = state.pullToRefreshState,
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(top = 56.dp)
+            )
         }
     }
 }

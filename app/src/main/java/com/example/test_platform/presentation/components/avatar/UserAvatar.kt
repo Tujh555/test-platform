@@ -1,6 +1,5 @@
 package com.example.test_platform.presentation.components.avatar
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,12 +14,11 @@ fun UserAvatar(
     userId: String,
     url: String? = null,
     shape: Shape = CircleShape,
-    onClick: () -> Unit = {}
 ) {
     val targetUrl = url ?: "file:///android_asset/avatar_${userId.uuidIndex() % 50 + 1}.webp"
 
     AsyncImage(
-        modifier = modifier.clip(shape).clickable(onClick = onClick),
+        modifier = modifier.clip(shape),
         model = targetUrl,
         contentDescription = null
     )

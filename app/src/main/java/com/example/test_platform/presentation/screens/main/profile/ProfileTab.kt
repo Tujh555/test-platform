@@ -1,6 +1,8 @@
 package com.example.test_platform.presentation.screens.main.profile
 
 import android.net.Uri
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.NonRestartableComposable
@@ -11,13 +13,15 @@ import com.example.test_platform.presentation.base.TabComponent
 
 class ProfileTab : TabComponent<ProfileTab.Action, ProfileTab.State> {
     @Immutable
-    data class State(
+    data class State @OptIn(ExperimentalMaterial3Api::class) constructor(
         val id: String = "",
         val avatar: String? = null,
         val name: String = "",
-        val avatarSending: Boolean = false,
-        val nameSending: Boolean = false,
-        val finishVisible: Boolean = false
+        val finishVisible: Boolean = false,
+        val pullToRefreshState: PullToRefreshState = PullToRefreshState(
+            enabled = { true },
+            positionalThresholdPx = 0f
+        )
     )
 
     @Immutable
