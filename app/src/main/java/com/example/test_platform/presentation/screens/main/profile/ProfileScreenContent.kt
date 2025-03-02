@@ -4,6 +4,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -11,6 +17,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,9 +29,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -37,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.test_platform.presentation.components.applyIf
 import com.example.test_platform.presentation.components.avatar.UserAvatar
 import com.example.test_platform.presentation.components.screenPadding
 import com.example.test_platform.presentation.screens.signup.onCreamTextFieldColors
@@ -50,6 +59,7 @@ fun ProfileTabContent(state: ProfileTab.State, onAction: (ProfileTab.Action) -> 
             .fillMaxSize()
             .imePadding()
     ) {
+        val isRefreshing = state.ptr.isRefreshing
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -86,16 +96,17 @@ fun ProfileTabContent(state: ProfileTab.State, onAction: (ProfileTab.Action) -> 
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
-                val isRefreshing = state.pullToRefreshState.isRefreshing
                 Text(
-                    modifier = Modifier.clip(CircleShape).clickable {
-                        if (isRefreshing.not()) {
-                            val request = PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.ImageOnly
-                            )
-                            galleryLauncher.launch(request)
-                        }
-                    },
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .applyIf(isRefreshing.not()) {
+                            clickable {
+                                val request = PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
+                                galleryLauncher.launch(request)
+                            }
+                        },
                     text = "Choose photo",
                     color = QuizTheme.blue
                 )
@@ -107,37 +118,35 @@ fun ProfileTabContent(state: ProfileTab.State, onAction: (ProfileTab.Action) -> 
                     modifier = Modifier.fillMaxWidth(),
                     colors = onCreamTextFieldColors(),
                     shape = RoundedCornerShape(8.dp),
-                    enabled = isRefreshing.not()
-                )
-            }
-        }
-
-        AnimatedVisibility(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            visible = state.finishVisible
-        ) {
-            FloatingActionButton(
-                modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
-                onClick = { onAction(ProfileTab.Action.Save) },
-                containerColor = QuizTheme.lightBlue,
-                contentColor = Color.White
-            ) {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    imageVector = Icons.Filled.Done,
-                    contentDescription = null
+                    enabled = isRefreshing.not(),
+                    trailingIcon = {
+                        AnimatedVisibility(
+                            visible = state.finishVisible && isRefreshing.not(),
+                            enter = scaleIn(),
+                            exit = scaleOut()
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .clickable { onAction(ProfileTab.Action.Save) },
+                                imageVector = Icons.Filled.Done,
+                                contentDescription = null,
+                                tint = Color.Black
+                            )
+                        }
+                    }
                 )
             }
         }
 
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.TopCenter),
-            visible = state.pullToRefreshState.isRefreshing,
+            visible = state.ptr.isRefreshing,
             enter = slideInVertically { -it },
             exit = slideOutVertically { -it }
         ) {
             PullToRefreshContainer(
-                state = state.pullToRefreshState,
+                state = state.ptr,
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(top = 56.dp)

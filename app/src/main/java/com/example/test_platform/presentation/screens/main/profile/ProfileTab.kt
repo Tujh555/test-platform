@@ -18,7 +18,7 @@ class ProfileTab : TabComponent<ProfileTab.Action, ProfileTab.State> {
         val avatar: String? = null,
         val name: String = "",
         val finishVisible: Boolean = false,
-        val pullToRefreshState: PullToRefreshState = PullToRefreshState(
+        val ptr: PullToRefreshState = PullToRefreshState(
             enabled = { true },
             positionalThresholdPx = 0f
         )

@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,7 +43,10 @@ private val shape = RoundedCornerShape(8.dp)
 @Composable
 fun SignInScreenContent(state: SignInScreen.State, onAction: (SignInScreen.Action) -> Unit) {
     Scaffold(
-        modifier = defaultScaffoldModifier.padding(bottom = 20.dp).imePadding(),
+        modifier = defaultScaffoldModifier
+            .padding(bottom = 20.dp)
+            .imePadding()
+            .verticalScroll(rememberScrollState()),
         title = "Welcome back!",
         isBackVisible = false,
     ) {

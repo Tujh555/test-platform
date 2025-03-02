@@ -1,11 +1,16 @@
 package com.example.test_platform.presentation.components.avatar
 
+import android.util.Log
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import java.lang.Long.parseLong
 
 @Composable
@@ -19,8 +24,11 @@ fun UserAvatar(
 
     AsyncImage(
         modifier = modifier.clip(shape),
-        model = targetUrl,
-        contentDescription = null
+        model = ImageRequest
+            .Builder(LocalContext.current)
+            .data(targetUrl)
+            .crossfade(true).build(),
+        contentDescription = null,
     )
 }
 

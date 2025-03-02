@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.security.crypto)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.lottie)
+    implementation(libs.okio)
+    implementation(libs.coil.network)
     ksp(libs.hilt.compiler)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

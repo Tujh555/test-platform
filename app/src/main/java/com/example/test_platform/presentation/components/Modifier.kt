@@ -5,3 +5,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 fun Modifier.screenPadding() = padding(horizontal = 16.dp)
+
+inline fun Modifier.applyIf(condition: () -> Boolean, block: Modifier.() -> Modifier): Modifier {
+    if (condition()) {
+        return this.block()
+    }
+
+    return this
+}
+
+fun Modifier.applyIf(condition: Boolean, block: Modifier.() -> Modifier) =
+    applyIf({ condition }, block)
