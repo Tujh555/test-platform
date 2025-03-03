@@ -1,6 +1,7 @@
 package com.example.test_platform
 
 import kotlinx.coroutines.delay
+import java.time.Instant
 
 suspend inline fun <T> withMinDelay(delay: Long = 600, block: () -> T): T {
     val startTime = System.currentTimeMillis()
@@ -10,3 +11,6 @@ suspend inline fun <T> withMinDelay(delay: Long = 600, block: () -> T): T {
     delay(additionalDelay)
     return result
 }
+
+fun String?.toInstantOrNow(): Instant =
+    runCatching { Instant.parse(this!!) }.getOrDefault(Instant.now())

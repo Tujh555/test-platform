@@ -1,21 +1,22 @@
 package com.example.test_platform.presentation.screens.main.home
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.NonRestartableComposable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.hilt.getScreenModel
 import com.example.test_platform.R
+import com.example.test_platform.domain.test.Quiz
+import com.example.test_platform.domain.user.User
 import com.example.test_platform.presentation.base.IconPair
 import com.example.test_platform.presentation.base.TabComponent
 
 class HomeTab : TabComponent<HomeTab.Action, HomeTab.State> {
     @Immutable
-    data class State(val stub: String = "")
+    data class State(
+        val user: User,
+        val allQuizzes: List<Quiz> = emptyList(),
+        val ownQuizzes: List<Quiz> = emptyList()
+    )
 
     @Immutable
     sealed interface Action
@@ -28,11 +29,8 @@ class HomeTab : TabComponent<HomeTab.Action, HomeTab.State> {
 
     @Composable
     @NonRestartableComposable
-    override fun Content(state: State, onAction: (Action) -> Unit) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Home")
-        }
-    }
+    override fun Content(state: State, onAction: (Action) -> Unit) =
+        HomeTabContent(state, onAction)
 
     @Composable
     override fun model(): HomeTabModel = getScreenModel()

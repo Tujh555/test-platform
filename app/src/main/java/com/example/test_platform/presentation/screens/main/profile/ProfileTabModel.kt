@@ -11,7 +11,6 @@ import com.example.test_platform.presentation.base.StateModel
 import com.example.test_platform.presentation.base.io
 import com.example.test_platform.presentation.error.ErrorHandler
 import com.example.test_platform.withMinDelay
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.onEach
@@ -24,7 +23,13 @@ class ProfileTabModel @Inject constructor(
     private val repository: ProfileRepository,
     private val errorHandler: ErrorHandler
 ) : StateModel<ProfileTab.Action, ProfileTab.State>,
-    StateHolder<ProfileTab.State> by StateHolder(ProfileTab.State()) {
+    StateHolder<ProfileTab.State> by StateHolder(
+        initialState = ProfileTab.State(
+            id = reactiveUser.value?.id.orEmpty(),
+            avatar = reactiveUser.value?.avatar,
+            name = reactiveUser.value?.name.orEmpty()
+        )
+) {
 
     private val user = MutableStateFlow<User?>(null)
 

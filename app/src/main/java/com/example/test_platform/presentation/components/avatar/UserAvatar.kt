@@ -1,6 +1,5 @@
 package com.example.test_platform.presentation.components.avatar
 
-import android.util.Log
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -8,7 +7,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import java.lang.Long.parseLong
@@ -32,7 +30,7 @@ fun UserAvatar(
     )
 }
 
-private fun String.uuidIndex(): Long {
+fun String.uuidIndex(): Long {
     if (length < 8) return 0
 
     return runCatching { parseLong(this, 0, 8, 36) }

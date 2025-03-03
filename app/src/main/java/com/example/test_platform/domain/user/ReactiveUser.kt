@@ -1,5 +1,5 @@
 package com.example.test_platform.domain.user
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
-interface ReactiveUser : Flow<User?>
+interface ReactiveUser : StateFlow<User?>

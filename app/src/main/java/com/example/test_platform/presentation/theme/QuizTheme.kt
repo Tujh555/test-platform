@@ -37,3 +37,5 @@ object QuizTheme {
         yellow
     )
 }
+
+fun QuizTheme.color(index: Long) = allColors[(index % allColors.size).toInt()]

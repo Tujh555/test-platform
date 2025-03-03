@@ -1,7 +1,8 @@
 package com.example.test_platform.domain.test
 
-interface Question {
-    enum class Type {
-        Single, Multiple
-    }
-}
+data class Question(
+    val id: String,
+    val text: String,
+    val variants: List<Answer>,
+    val answers: List<Answer>
+)

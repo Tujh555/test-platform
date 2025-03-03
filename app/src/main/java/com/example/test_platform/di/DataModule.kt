@@ -3,12 +3,16 @@ package com.example.test_platform.di
 import android.content.Context
 import com.example.test_platform.data.auth.AuthRepositoryImpl
 import com.example.test_platform.data.dto.UserDto
+import com.example.test_platform.data.quiz.source.AllSource
+import com.example.test_platform.data.quiz.source.OwnSource
+import com.example.test_platform.data.quiz.source.SearchSource
 import com.example.test_platform.data.store.Store
 import com.example.test_platform.data.store.jsonStore
 import com.example.test_platform.data.store.stringStore
 import com.example.test_platform.data.user.ProfileRepositoryImpl
 import com.example.test_platform.data.user.UserFlow
 import com.example.test_platform.domain.auth.AuthRepository
+import com.example.test_platform.domain.test.repository.QuizSource
 import com.example.test_platform.domain.user.ProfileRepository
 import com.example.test_platform.domain.user.ReactiveUser
 import dagger.Binds
@@ -35,6 +39,15 @@ interface DataModule {
 
     @Binds
     fun profile(impl: ProfileRepositoryImpl): ProfileRepository
+
+    @Binds
+    fun allSource(factory: AllSource.Factory): QuizSource.Factory
+
+    @Binds
+    fun ownSource(factory: OwnSource.Factory): QuizSource.OwnFactory
+
+    @Binds
+    fun searchSource(factory: SearchSource.Factory): QuizSource.SearchFactory
 
     companion object {
         @Provides
