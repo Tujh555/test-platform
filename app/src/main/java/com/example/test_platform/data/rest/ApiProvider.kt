@@ -1,6 +1,7 @@
 package com.example.test_platform.data.rest
 
 import com.example.test_platform.data.auth.rest.AuthApi
+import com.example.test_platform.data.quiz.rest.QuizApi
 import com.example.test_platform.data.retrofit.ResultAdapterFactory
 import com.example.test_platform.data.user.rest.ProfileApi
 import dagger.Module
@@ -35,4 +36,7 @@ class ApiProvider {
 
     @Provides
     fun profileApi(retrofit: Retrofit): ProfileApi = ProfileApi.Mock
+
+    @Provides
+    fun quizApi(retrofit: Retrofit): QuizApi = QuizApi.Mock
 }

@@ -13,7 +13,7 @@ import com.example.test_platform.R
 import com.example.test_platform.presentation.base.IconPair
 import com.example.test_platform.presentation.base.TabComponent
 
-class SearchTab : TabComponent<SearchTab.Action, SearchTab.State> {
+object SearchTab : TabComponent<SearchTab.Action, SearchTab.State> {
     @Immutable
     data class State(val stub: String = "")
 
@@ -36,4 +36,6 @@ class SearchTab : TabComponent<SearchTab.Action, SearchTab.State> {
 
     @Composable
     override fun model(): SearchTabModel = getScreenModel()
+
+    private fun readResolve(): Any = SearchTab
 }

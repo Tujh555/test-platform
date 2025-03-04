@@ -11,10 +11,10 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.hilt.getScreenModel
 import com.example.test_platform.R
 import com.example.test_platform.presentation.base.IconPair
-import com.example.test_platform.presentation.base.Model
 import com.example.test_platform.presentation.base.TabComponent
 
-class QuizzesTab : TabComponent<QuizzesTab.Action, QuizzesTab.State> {
+object QuizzesTab : TabComponent<QuizzesTab.Action, QuizzesTab.State> {
+
     @Immutable
     data class State(val stub: String = "")
 
@@ -37,4 +37,6 @@ class QuizzesTab : TabComponent<QuizzesTab.Action, QuizzesTab.State> {
 
     @Composable
     override fun model(): QuizzesTabModel = getScreenModel()
+
+    private fun readResolve(): Any = QuizzesTab
 }

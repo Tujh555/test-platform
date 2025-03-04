@@ -19,6 +19,7 @@ object QuizTheme {
     val lightGray = Color(0xFFE1E1E2)
     val yellow = Color(0xFFFFD54B)
     val border = Color(0xFFE8ECF4)
+    val supportedText = Color(0xFFE7E7E7)
 
     val allColors = listOf(
         lightBlue2,
@@ -33,7 +34,6 @@ object QuizTheme {
         darkPink,
         red,
         darkGray,
-        lightGray,
         yellow
     )
 }

@@ -26,7 +26,7 @@ import com.example.test_platform.presentation.screens.main.search.SearchTab
 val LocalBottomBarHeight = compositionLocalOf { 0.dp }
 
 class MainScreen : Screen {
-    private val tabs = listOf(HomeTab(), QuizzesTab(), SearchTab(), ProfileTab())
+    private val tabs = listOf(HomeTab, QuizzesTab, SearchTab, ProfileTab)
 
     @Composable
     override fun Content() {

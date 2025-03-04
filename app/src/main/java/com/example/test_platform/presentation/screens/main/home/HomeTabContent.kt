@@ -1,86 +1,179 @@
 package com.example.test_platform.presentation.screens.main.home
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.test_platform.domain.test.Quiz
+import androidx.compose.ui.util.lerp
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import com.example.test_platform.presentation.components.AuthoredQuizCard
+import com.example.test_platform.presentation.components.OwnQuizCard
+import com.example.test_platform.presentation.components.StubState
 import com.example.test_platform.presentation.components.avatar.UserAvatar
-import com.example.test_platform.presentation.components.avatar.uuidIndex
 import com.example.test_platform.presentation.components.screenPadding
+import com.example.test_platform.presentation.screens.main.LocalBottomBarHeight
+import com.example.test_platform.presentation.screens.main.profile.ProfileTab
+import com.example.test_platform.presentation.screens.main.quizzes.QuizzesTab
 import com.example.test_platform.presentation.theme.QuizTheme
-import com.example.test_platform.presentation.theme.color
+import kotlin.math.absoluteValue
 
-private val topShape = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)
-private val bottomShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+private val topShape = RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp)
+private val bottomShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
 val cardShape = RoundedCornerShape(16.dp)
 
 @Composable
 fun HomeTabContent(state: HomeTab.State, onAction: (HomeTab.Action) -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(QuizTheme.cream)
-            .padding(horizontal = 8.dp)
-    ) {
-        TopPanel(
-            modifier = Modifier.weight(2f),
-            state = state,
-            onAction = onAction
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        BottomPanel(
-            modifier = Modifier.weight(2f),
-            state = state,
-            onAction = onAction
-        )
+    var isLandscape by remember { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
+
+    LaunchedEffect(configuration.orientation) {
+        isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    }
+
+    if (isLandscape) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(QuizTheme.cream)
+                .padding(horizontal = 8.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            TopPanel(state = state, onAction = onAction)
+            Spacer(modifier = Modifier.height(20.dp))
+            BottomPanel(state = state, onAction = onAction)
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(QuizTheme.cream)
+                .padding(horizontal = 8.dp)
+        ) {
+            TopPanel(
+                modifier = Modifier.weight(1f),
+                state = state,
+                onAction = onAction
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            BottomPanel(
+                modifier = Modifier.weight(1.3f),
+                state = state,
+                onAction = onAction
+            )
+        }
     }
 }
 
 @Composable
 private fun BottomPanel(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     state: HomeTab.State,
     onAction: (HomeTab.Action) -> Unit
 ) {
-    Column(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(bottomShape)
             .background(Color.White, bottomShape)
             .navigationBarsPadding()
-            .screenPadding()
+            .screenPadding(),
     ) {
+        StubState(
+            modifier = Modifier.fillMaxSize(),
+            stub = state.ownStub,
+            onRetry = { onAction(HomeTab.Action.RefreshOwn) },
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(bottom = LocalBottomBarHeight.current)
+            ) {
+                item("header") {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White)
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Your Quizzes",
+                            color = Color.Black,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
 
+                        val tabNavigator = LocalTabNavigator.current
+                        Text(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .clickable {
+                                    tabNavigator.current = QuizzesTab
+                                },
+                            text = "See all",
+                            color = QuizTheme.violet,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+
+                items(
+                    items = state.ownQuizzes,
+                    key = { it.id },
+                ) { quiz ->
+                    OwnQuizCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        quiz = quiz,
+                        onClick = {}
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
 private fun TopPanel(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     state: HomeTab.State,
     onAction: (HomeTab.Action) -> Unit
 ) {
@@ -90,11 +183,12 @@ private fun TopPanel(
             .clip(topShape)
             .background(Color.White, topShape)
             .statusBarsPadding()
-            .screenPadding()
     ) {
         val user = state.user
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .screenPadding(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -105,44 +199,69 @@ private fun TopPanel(
                 fontWeight = FontWeight.Bold
             )
 
+            val tabNavigator = LocalTabNavigator.current
             UserAvatar(
-                modifier = Modifier.size(56.dp).shadow(elevation = 10.dp, shape = CircleShape),
+                modifier = Modifier
+                    .size(56.dp)
+                    .shadow(elevation = 10.dp, shape = CircleShape),
                 userId = user.id,
                 url = user.avatar,
+                onClick = { tabNavigator.current = ProfileTab }
             )
         }
-    }
-}
 
-@Composable
-private fun AllQuizCard(
-    modifier: Modifier = Modifier,
-    quiz: Quiz,
-    onClick: (Quiz) -> Unit
-) {
-    val index = quiz.id.uuidIndex()
-    Column(
-        modifier = Modifier
-            .clip(cardShape)
-            .background(QuizTheme.color(index))
-            .padding(16.dp)
-    ) {
-        Row {
-            Badge { Text(text = quiz.theme, color = Color.Black, fontWeight = FontWeight.Bold) }
-            Spacer(modifier = Modifier.width(8.dp))
-            Badge { Text(text = "${quiz.durationMinutes} min", color = Color.White) }
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            modifier = Modifier.screenPadding(),
+            text = "Quizzes",
+            color = Color.Black,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Medium
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        StubState(
+            modifier = Modifier.fillMaxSize().screenPadding(),
+            stub = state.allStub,
+            onRetry = { onAction(HomeTab.Action.RefreshAll) },
+        ) {
+            val quizzes = state.allQuizzes
+            val pagerState = rememberPagerState { quizzes.size }
+            HorizontalPager(
+                modifier = Modifier.fillMaxSize(),
+                key = { quizzes[it].id },
+                verticalAlignment = Alignment.CenterVertically,
+                pageSpacing = 4.dp,
+                contentPadding = PaddingValues(horizontal = 32.dp),
+                state = pagerState,
+            ) { page ->
+                val quiz = quizzes[page]
+                AuthoredQuizCard(
+                    modifier = Modifier
+                        .width(350.dp)
+                        .graphicsLayer {
+                            val diff = (pagerState.currentPage - page)
+                            val pageOffset = (diff + pagerState.currentPageOffsetFraction).absoluteValue
+
+                            alpha = lerp(
+                                start = 0.5f,
+                                stop = 1f,
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            )
+                            scaleY = lerp(
+                                start = 0.75f,
+                                stop = 1f,
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            )
+                        },
+                    quiz = quiz,
+                    onClick = {
+                        // TODO solve quiz
+                    }
+                )
+            }
         }
     }
-}
-
-@Composable
-@NonRestartableComposable
-private fun Badge(content: @Composable BoxScope.() -> Unit) {
-    Box(
-        modifier = Modifier
-            .clip(CircleShape)
-            .background(Color.White, CircleShape)
-            .padding(horizontal = 12.dp, vertical = 4.dp),
-        content = content
-    )
 }

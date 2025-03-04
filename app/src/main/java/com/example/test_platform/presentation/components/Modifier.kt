@@ -16,3 +16,11 @@ inline fun Modifier.applyIf(condition: () -> Boolean, block: Modifier.() -> Modi
 
 fun Modifier.applyIf(condition: Boolean, block: Modifier.() -> Modifier) =
     applyIf({ condition }, block)
+
+fun <T> Modifier.applyNotNull(item: T?, block: Modifier.(T) -> Modifier): Modifier {
+    if (item == null) {
+        return this
+    }
+
+    return this.block(item)
+}

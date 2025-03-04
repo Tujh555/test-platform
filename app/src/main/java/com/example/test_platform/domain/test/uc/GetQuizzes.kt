@@ -18,28 +18,31 @@ class GetQuizzes @Inject constructor(
 ) {
     private val limit = 10
 
-    fun all() = fromSource(all)
+    fun all(minDelay: Long = 0) = fromSource(minDelay, all)
 
-    fun own() = fromSource(own)
+    fun own(minDelay: Long = 0) = fromSource(minDelay, own)
 
-    fun search(searchQuery: Flow<String>) = object : PageableSourcePager<Quiz> {
-        private var underlying: PageableSourcePager<Quiz>? = null
+    fun search(minDelay: Long = 0, searchQuery: Flow<String>) = object : PageableSourcePager<Quiz> {
+        private var _underlying: PageableSourcePager<Quiz>? = null
 
         override fun paginate(position: Flow<Int>): Flow<PagedElements<Quiz>> = channelFlow {
             searchQuery.collectLatest { query ->
-                val underlying = fromSource { limit -> search(query, limit) }.also { underlying = it }
+                val underlying = fromSource(minDelay) { limit ->
+                    search(query, limit)
+                }
+                _underlying = underlying
                 underlying.paginate(position).collect(::send)
             }
         }
 
         override suspend fun refresh() {
-            underlying?.refresh()
+            _underlying?.refresh()
         }
     }
 
-    private fun fromSource(factory: (Int) -> QuizSource): PageableSourcePager<Quiz> {
+    private fun fromSource(minDelay: Long, factory: (Int) -> QuizSource): PageableSourcePager<Quiz> {
         val source = factory(limit)
         val paginator = statePaginator(Instant.now(), limit, source, Quiz::createdAt)
-        return PageableSourcePager(source, paginator)
+        return PageableSourcePager(source, paginator, minDelay)
     }
 }

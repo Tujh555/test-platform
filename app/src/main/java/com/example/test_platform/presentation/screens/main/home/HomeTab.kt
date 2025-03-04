@@ -9,17 +9,23 @@ import com.example.test_platform.domain.test.Quiz
 import com.example.test_platform.domain.user.User
 import com.example.test_platform.presentation.base.IconPair
 import com.example.test_platform.presentation.base.TabComponent
+import com.example.test_platform.presentation.components.Stub
 
-class HomeTab : TabComponent<HomeTab.Action, HomeTab.State> {
+object HomeTab : TabComponent<HomeTab.Action, HomeTab.State> {
     @Immutable
     data class State(
         val user: User,
         val allQuizzes: List<Quiz> = emptyList(),
-        val ownQuizzes: List<Quiz> = emptyList()
+        val ownQuizzes: List<Quiz> = emptyList(),
+        val allStub: Stub = Stub.Loading,
+        val ownStub: Stub = Stub.Loading
     )
 
     @Immutable
-    sealed interface Action
+    sealed interface Action {
+        data object RefreshAll : Action
+        data object RefreshOwn : Action
+    }
 
     override val title: String = "Home"
     override val icons: IconPair = IconPair(
@@ -34,4 +40,6 @@ class HomeTab : TabComponent<HomeTab.Action, HomeTab.State> {
 
     @Composable
     override fun model(): HomeTabModel = getScreenModel()
+
+    private fun readResolve(): Any = HomeTab
 }

@@ -11,7 +11,7 @@ import com.example.test_platform.R
 import com.example.test_platform.presentation.base.IconPair
 import com.example.test_platform.presentation.base.TabComponent
 
-class ProfileTab : TabComponent<ProfileTab.Action, ProfileTab.State> {
+object ProfileTab : TabComponent<ProfileTab.Action, ProfileTab.State> {
     @Immutable
     data class State @OptIn(ExperimentalMaterial3Api::class) constructor(
         val id: String = "",
@@ -48,4 +48,6 @@ class ProfileTab : TabComponent<ProfileTab.Action, ProfileTab.State> {
 
     @Composable
     override fun model(): ProfileTabModel = getScreenModel()
+
+    private fun readResolve(): Any = ProfileTab
 }

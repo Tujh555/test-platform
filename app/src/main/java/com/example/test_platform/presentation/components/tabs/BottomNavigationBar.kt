@@ -1,12 +1,10 @@
 package com.example.test_platform.presentation.components.tabs
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
@@ -24,22 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.ScreenKey
-import cafe.adriel.voyager.core.screen.uniqueScreenKey
-import cafe.adriel.voyager.navigator.tab.TabNavigator
-import com.example.test_platform.R
-import com.example.test_platform.presentation.base.IconPair
-import com.example.test_platform.presentation.base.Model
 import com.example.test_platform.presentation.base.TabComponent
 import com.example.test_platform.presentation.theme.QuizTheme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.emptyFlow
 
 private val shape = RoundedCornerShape(
     topStart = 16.dp,
@@ -102,43 +89,6 @@ fun BottomNavigationBar(
                     BottomNavigationItem(Modifier, tab)
                 }
             }
-        }
-    }
-}
-
-private fun previewTab(index: Int) = object : TabComponent<Any, Any> {
-    override val key: ScreenKey = uniqueScreenKey
-    @Composable
-    override fun Content(state: Any, onAction: (Any) -> Unit) = Unit
-
-    override val title: String = "Tab $index"
-    override val icons: IconPair = IconPair(
-        R.drawable.ic_launcher_foreground,
-        R.drawable.ic_launcher_foreground
-    )
-
-    @Composable
-    override fun model(): Model<Any, Any, Nothing> = object : Model<Any, Any, Nothing> {
-        override val state: StateFlow<Any> = MutableStateFlow(Any())
-        override val event: Flow<Nothing> = emptyFlow()
-        override fun onAction(action: Any) {}
-    }
-}
-
-private val previewTabs = (1..4).map(::previewTab)
-
-@Composable
-@Preview
-private fun BarPreview() {
-    Box(
-        modifier = Modifier.background(QuizTheme.lightGray).fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        TabNavigator(previewTabs.first()) {
-            BottomNavigationBar(
-                modifier = Modifier.fillMaxWidth(),
-                tabs = previewTabs
-            )
         }
     }
 }
