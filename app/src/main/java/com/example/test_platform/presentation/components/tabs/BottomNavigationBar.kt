@@ -37,7 +37,7 @@ private val shape = RoundedCornerShape(
 fun BottomNavigationBar(
     modifier: Modifier = Modifier,
     fabSize: Dp = 68.dp,
-    tabs: List<TabComponent<*, *>>,
+    tabs: List<TabComponent<*, *, *>>,
     onFabClick: () -> Unit = {}
 ) {
     Box(

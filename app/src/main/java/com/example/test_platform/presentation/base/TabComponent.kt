@@ -8,7 +8,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 
 @Stable
-interface TabComponent<A, S> : Tab, StateComponent<A, S> {
+interface TabComponent<A, S, E> : Tab, ScreenComponent<A, S, E> {
     override val options @Composable get() = emptyOptions
 
     val title: String
@@ -17,6 +17,11 @@ interface TabComponent<A, S> : Tab, StateComponent<A, S> {
     companion object {
         private val emptyOptions = TabOptions(0u, "", null)
     }
+}
+
+interface StateTabComponent<A, S> : TabComponent<A, S, Nothing> {
+    @Composable
+    override fun Event(event: Nothing) = Unit
 }
 
 @Immutable

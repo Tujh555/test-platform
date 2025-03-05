@@ -29,7 +29,7 @@ private val selected = Color(0xFF49454F)
 private val unselected = Color(0xFF6D6D6D)
 
 @Composable
-fun BottomNavigationItem(modifier: Modifier = Modifier, tab: TabComponent<*, *>) {
+fun BottomNavigationItem(modifier: Modifier = Modifier, tab: TabComponent<*, *, *>) {
     val navigator = LocalTabNavigator.current
     val isSelected = navigator.current == tab
     val title = tab.title

@@ -1,6 +1,7 @@
 package com.example.test_platform.presentation.screens.main.home
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,10 +22,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
@@ -55,8 +55,8 @@ import com.example.test_platform.presentation.screens.main.quizzes.QuizzesTab
 import com.example.test_platform.presentation.theme.QuizTheme
 import kotlin.math.absoluteValue
 
-private val topShape = RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp)
-private val bottomShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+val topShape = RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp)
+val bottomShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
 val cardShape = RoundedCornerShape(16.dp)
 
 @Composable
@@ -69,16 +69,27 @@ fun HomeTabContent(state: HomeTab.State, onAction: (HomeTab.Action) -> Unit) {
     }
 
     if (isLandscape) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
                 .background(QuizTheme.cream)
                 .padding(horizontal = 8.dp)
-                .verticalScroll(rememberScrollState())
+                .padding(bottom = LocalBottomBarHeight.current)
+                .statusBarsPadding()
         ) {
-            TopPanel(state = state, onAction = onAction)
-            Spacer(modifier = Modifier.height(20.dp))
-            BottomPanel(state = state, onAction = onAction)
+            TopPanel(
+                modifier = Modifier.weight(1f),
+                state = state,
+                onAction = onAction,
+                shape = bottomShape
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            BottomPanel(
+                modifier = Modifier.weight(1f),
+                state = state,
+                onAction = onAction,
+                shape = bottomShape
+            )
         }
     } else {
         Column(
@@ -90,28 +101,32 @@ fun HomeTabContent(state: HomeTab.State, onAction: (HomeTab.Action) -> Unit) {
             TopPanel(
                 modifier = Modifier.weight(1f),
                 state = state,
-                onAction = onAction
+                onAction = onAction,
+                shape = topShape
             )
             Spacer(modifier = Modifier.height(24.dp))
             BottomPanel(
                 modifier = Modifier.weight(1.3f),
                 state = state,
-                onAction = onAction
+                onAction = onAction,
+                shape = bottomShape
             )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun BottomPanel(
     modifier: Modifier = Modifier,
     state: HomeTab.State,
+    shape: Shape,
     onAction: (HomeTab.Action) -> Unit
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(bottomShape)
+            .clip(shape)
             .background(Color.White, bottomShape)
             .navigationBarsPadding()
             .screenPadding(),
@@ -126,7 +141,7 @@ private fun BottomPanel(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(bottom = LocalBottomBarHeight.current)
             ) {
-                item("header") {
+                stickyHeader("header") {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -175,12 +190,13 @@ private fun BottomPanel(
 private fun TopPanel(
     modifier: Modifier = Modifier,
     state: HomeTab.State,
+    shape: Shape,
     onAction: (HomeTab.Action) -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(topShape)
+            .clip(shape)
             .background(Color.White, topShape)
             .statusBarsPadding()
     ) {

@@ -1,24 +1,36 @@
 package com.example.test_platform.presentation.screens.main.search
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.NonRestartableComposable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.hilt.getScreenModel
 import com.example.test_platform.R
+import com.example.test_platform.domain.test.Quiz
 import com.example.test_platform.presentation.base.IconPair
-import com.example.test_platform.presentation.base.TabComponent
+import com.example.test_platform.presentation.base.StateTabComponent
+import com.example.test_platform.presentation.components.Stub
+import com.example.test_platform.presentation.components.lastVisibleItemIndex
+import kotlinx.coroutines.flow.onStart
 
-object SearchTab : TabComponent<SearchTab.Action, SearchTab.State> {
+object SearchTab : StateTabComponent<SearchTab.Action, SearchTab.State> {
     @Immutable
-    data class State(val stub: String = "")
+    data class State(
+        val query: String = "",
+        val quizzes: List<Quiz> = emptyList(),
+        val stub: Stub = Stub.Loading,
+        val adding: Boolean = false,
+        val listState: LazyListState = LazyListState()
+    ) {
+        val lastQuizIndex get() = listState.lastVisibleItemIndex().onStart { emit(0) }
+    }
 
     @Immutable
-    sealed interface Action
+    sealed interface Action {
+        @JvmInline
+        value class Query(val value: String) : Action
+        data object Refresh : Action
+    }
 
     override val title: String = "Search"
     override val icons: IconPair = IconPair(
@@ -28,11 +40,8 @@ object SearchTab : TabComponent<SearchTab.Action, SearchTab.State> {
 
     @Composable
     @NonRestartableComposable
-    override fun Content(state: State, onAction: (Action) -> Unit) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Search")
-        }
-    }
+    override fun Content(state: State, onAction: (Action) -> Unit) =
+        SearchScreenContent(state, onAction)
 
     @Composable
     override fun model(): SearchTabModel = getScreenModel()

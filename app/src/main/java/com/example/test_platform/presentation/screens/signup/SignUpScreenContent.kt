@@ -65,7 +65,8 @@ fun SignUpScreenContent(state: SignUpScreen.State, onAction: (SignUpScreen.Actio
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(text = "Email") },
             colors = textFieldColors,
-            shape = shape
+            shape = shape,
+            singleLine = true,
         )
 
         Spacer(modifier = Modifier.height(12.dp))

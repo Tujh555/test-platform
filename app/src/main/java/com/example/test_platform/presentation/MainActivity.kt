@@ -10,8 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
@@ -22,6 +24,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
+
+val LocalRootNavigator = staticCompositionLocalOf<Navigator> {
+    error("RootNavigator is not provided")
+}
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -44,7 +50,11 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { _ ->
-                    Navigator(SplashScreen()) { SlideTransition(it) }
+                    Navigator(SplashScreen()) {
+                        CompositionLocalProvider(LocalRootNavigator provides it) {
+                            SlideTransition(it)
+                        }
+                    }
                 }
             }
         }

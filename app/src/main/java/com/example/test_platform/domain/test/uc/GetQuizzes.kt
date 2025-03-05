@@ -1,5 +1,6 @@
 package com.example.test_platform.domain.test.uc
 
+import android.util.Log
 import com.example.test_platform.domain.paging.paginator.statePaginator
 import com.example.test_platform.domain.paging.source.PageableSourcePager
 import com.example.test_platform.domain.paging.source.PagedElements
@@ -8,6 +9,7 @@ import com.example.test_platform.domain.test.repository.QuizSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onEach
 import java.time.Instant
 import javax.inject.Inject
 
@@ -30,8 +32,9 @@ class GetQuizzes @Inject constructor(
                 val underlying = fromSource(minDelay) { limit ->
                     search(query, limit)
                 }
+                Log.d("--tag", "--> query = $query")
                 _underlying = underlying
-                underlying.paginate(position).collect(::send)
+                underlying.paginate(position.onEach { Log.e("--tag", "position = $it") }).collect(::send)
             }
         }
 

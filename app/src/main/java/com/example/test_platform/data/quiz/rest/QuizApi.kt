@@ -2,6 +2,7 @@ package com.example.test_platform.data.quiz.rest
 
 import com.example.test_platform.data.dto.QuizDto
 import com.example.test_platform.data.dto.UserDto
+import kotlinx.coroutines.delay
 import retrofit2.http.GET
 import retrofit2.http.Query
 import java.time.Instant
@@ -28,77 +29,59 @@ interface QuizApi {
         @Query("cursor") cursor: String
     ): Result<List<QuizDto>>
 
-    companion object Mock : QuizApi {
-        override suspend fun quizzes(limit: Int, cursor: String): Result<List<QuizDto>> {
-            if (nextInt(0, 10) % 2 == 0) {
-                val list = List(limit) {
-                    QuizDto(
+    companion object {
+        operator fun invoke(): QuizApi = object : QuizApi {
+            private val pagesLimit = 10
+            private var allLoaded = 0
+            private var ownLoaded = 0
+            private var searchLoaded = 0
+
+            private fun list(count: Int) = List(count) {
+                QuizDto(
+                    id = UUID.randomUUID().toString(),
+                    title = "Quiz title #$it",
+                    durationMinutes = nextInt(5, 100),
+                    questions = listOf(),
+                    author = UserDto(
                         id = UUID.randomUUID().toString(),
-                        title = "Quiz title #$it",
-                        durationMinutes = nextInt(5, 100),
-                        questions = listOf(),
-                        author = UserDto(
+                        avatar = null,
+                        name = "User name #$it"
+                    ),
+                    solvedCount = 10,
+                    lastSolvers = List(nextInt(0, 5)) { i ->
+                        UserDto(
                             id = UUID.randomUUID().toString(),
                             avatar = null,
-                            name = "User name #$it"
-                        ),
-                        solvedCount = 10,
-                        lastSolvers = List(nextInt(0, 5)) { i ->
-                            UserDto(
-                                id = UUID.randomUUID().toString(),
-                                avatar = null,
-                                name = "User name #$i"
-                            )
-                        },
-                        createdAt = Instant.now().toString(),
-                        theme = "Quiz theme #$it"
-                    )
-                }
-
-                return Result.success(list)
+                            name = "User name #$i"
+                        )
+                    },
+                    createdAt = Instant.now().toString(),
+                    theme = "Quiz theme #$it"
+                )
             }
 
-            return Result.failure(IllegalStateException())
-        }
-
-        override suspend fun quizzes(
-            query: String,
-            limit: Int,
-            cursor: String
-        ): Result<List<QuizDto>> {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun ownQuizzes(limit: Int, cursor: String): Result<List<QuizDto>> {
-            if (nextInt(0, 10) % 2 == 0) {
-                val list = List(limit) {
-                    QuizDto(
-                        id = UUID.randomUUID().toString(),
-                        title = "Quiz title #$it",
-                        durationMinutes = nextInt(5, 100),
-                        questions = listOf(),
-                        author = UserDto(
-                            id = UUID.randomUUID().toString(),
-                            avatar = null,
-                            name = "User name #$it"
-                        ),
-                        solvedCount = 10,
-                        lastSolvers = List(nextInt(0, 5)) { i ->
-                            UserDto(
-                                id = UUID.randomUUID().toString(),
-                                avatar = null,
-                                name = "User name #$i"
-                            )
-                        },
-                        createdAt = Instant.now().toString(),
-                        theme = "Quiz theme #$it"
-                    )
-                }
-
-                return Result.success(list)
+            override suspend fun quizzes(limit: Int, cursor: String): Result<List<QuizDto>> {
+                delay(1000)
+                val count = if (allLoaded == pagesLimit) limit - 1 else limit
+                return Result.success(list(count)).also { allLoaded++ }
             }
 
-            return Result.failure(IllegalStateException())
+            override suspend fun quizzes(
+                query: String,
+                limit: Int,
+                cursor: String
+            ): Result<List<QuizDto>> {
+                delay(1000)
+                val count = if (searchLoaded == pagesLimit) limit - 1 else limit
+                return Result.success(list(count)).also { searchLoaded++ }
+            }
+
+            override suspend fun ownQuizzes(limit: Int, cursor: String): Result<List<QuizDto>> {
+                delay(1000)
+                val count = if (ownLoaded >= pagesLimit) limit / 2 else limit
+                ownLoaded++
+                return Result.success(list(count))
+            }
         }
     }
 }

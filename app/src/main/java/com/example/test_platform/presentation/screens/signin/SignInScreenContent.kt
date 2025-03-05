@@ -22,7 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -59,7 +58,8 @@ fun SignInScreenContent(state: SignInScreen.State, onAction: (SignInScreen.Actio
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(text = "Email") },
             colors = textFieldColors,
-            shape = shape
+            shape = shape,
+            singleLine = true,
         )
 
         Spacer(modifier = Modifier.height(12.dp))

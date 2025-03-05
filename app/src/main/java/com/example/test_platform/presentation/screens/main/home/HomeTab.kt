@@ -8,10 +8,10 @@ import com.example.test_platform.R
 import com.example.test_platform.domain.test.Quiz
 import com.example.test_platform.domain.user.User
 import com.example.test_platform.presentation.base.IconPair
-import com.example.test_platform.presentation.base.TabComponent
+import com.example.test_platform.presentation.base.StateTabComponent
 import com.example.test_platform.presentation.components.Stub
 
-object HomeTab : TabComponent<HomeTab.Action, HomeTab.State> {
+object HomeTab : StateTabComponent<HomeTab.Action, HomeTab.State> {
     @Immutable
     data class State(
         val user: User,

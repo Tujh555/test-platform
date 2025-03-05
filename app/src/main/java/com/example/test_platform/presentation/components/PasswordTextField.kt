@@ -49,6 +49,7 @@ fun PasswordTextField(
         value = text,
         onValueChange = onValueChange,
         isError = error,
+        singleLine = true,
         placeholder = { Text(text = placeholder) },
         visualTransformation = if (inputVisible) {
             VisualTransformation.None

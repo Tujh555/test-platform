@@ -3,11 +3,13 @@ package com.example.test_platform.presentation.screens.main.profile
 import android.net.Uri
 import androidx.compose.material3.ExperimentalMaterial3Api
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.example.test_platform.domain.auth.AuthRepository
 import com.example.test_platform.domain.user.ProfileRepository
 import com.example.test_platform.domain.user.ReactiveUser
 import com.example.test_platform.domain.user.User
+import com.example.test_platform.presentation.base.EventEmitter
+import com.example.test_platform.presentation.base.Model
 import com.example.test_platform.presentation.base.StateHolder
-import com.example.test_platform.presentation.base.StateModel
 import com.example.test_platform.presentation.base.io
 import com.example.test_platform.presentation.error.ErrorHandler
 import com.example.test_platform.withMinDelay
@@ -21,15 +23,17 @@ import javax.inject.Inject
 class ProfileTabModel @Inject constructor(
     private val reactiveUser: ReactiveUser,
     private val repository: ProfileRepository,
-    private val errorHandler: ErrorHandler
-) : StateModel<ProfileTab.Action, ProfileTab.State>,
+    private val errorHandler: ErrorHandler,
+    private val authRepository: AuthRepository,
+) : Model<ProfileTab.Action, ProfileTab.State, ProfileTab.Event>,
     StateHolder<ProfileTab.State> by StateHolder(
         initialState = ProfileTab.State(
             id = reactiveUser.value?.id.orEmpty(),
             avatar = reactiveUser.value?.avatar,
             name = reactiveUser.value?.name.orEmpty()
         )
-) {
+    ),
+    EventEmitter<ProfileTab.Event> by EventEmitter() {
 
     private val user = MutableStateFlow<User?>(null)
 
@@ -49,6 +53,16 @@ class ProfileTabModel @Inject constructor(
             ProfileTab.Action.Save -> save()
 
             is ProfileTab.Action.UploadAvatar -> uploadAvatar(action.uri)
+            ProfileTab.Action.Logout -> logout()
+        }
+    }
+
+    private fun logout() {
+        screenModelScope.io {
+            authRepository
+                .logout()
+                .onFailure { errorHandler.handle("Failed to logout") }
+                .onSuccess { emit(ProfileTab.Event.Logout()) }
         }
     }
 

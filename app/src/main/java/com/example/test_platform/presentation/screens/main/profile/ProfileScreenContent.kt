@@ -13,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,9 +38,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.test_platform.R
 import com.example.test_platform.presentation.components.applyIf
 import com.example.test_platform.presentation.components.avatar.UserAvatar
 import com.example.test_platform.presentation.components.screenPadding
@@ -63,13 +66,27 @@ fun ProfileTabContent(state: ProfileTab.State, onAction: (ProfileTab.Action) -> 
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(
-                modifier = Modifier.screenPadding(),
-                text = "Profile",
-                fontSize = 32.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth().screenPadding(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Profile",
+                    fontSize = 32.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+                Icon(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .clickable { onAction(ProfileTab.Action.Logout) },
+                    painter = painterResource(R.drawable.ic_logout),
+                    contentDescription = null,
+                    tint = Color.Black
+                )
+            }
 
             Column(
                 modifier = Modifier

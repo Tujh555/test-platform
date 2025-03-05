@@ -19,4 +19,4 @@ class UserFlow @Inject constructor(
 
 private fun Store<UserDto>.user(scope: CoroutineScope) = data
     .map { it?.toDomain() }
-    .stateIn(scope, SharingStarted.Eagerly, UserDto.unknown.toDomain())
+    .stateIn(scope, SharingStarted.Eagerly, null)

@@ -1,25 +1,34 @@
 package com.example.test_platform.presentation.screens.main.quizzes
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.NonRestartableComposable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.hilt.getScreenModel
 import com.example.test_platform.R
+import com.example.test_platform.domain.test.Quiz
 import com.example.test_platform.presentation.base.IconPair
-import com.example.test_platform.presentation.base.TabComponent
+import com.example.test_platform.presentation.base.StateTabComponent
+import com.example.test_platform.presentation.components.Stub
+import com.example.test_platform.presentation.components.lastVisibleItemIndex
+import kotlinx.coroutines.flow.onStart
 
-object QuizzesTab : TabComponent<QuizzesTab.Action, QuizzesTab.State> {
+object QuizzesTab : StateTabComponent<QuizzesTab.Action, QuizzesTab.State> {
 
     @Immutable
-    data class State(val stub: String = "")
+    data class State(
+        val quizzes: List<Quiz> = emptyList(),
+        val stub: Stub = Stub.Loading,
+        val listState: LazyListState = LazyListState(),
+        val adding: Boolean = false,
+    ) {
+        val lastQuizIndex get() = listState.lastVisibleItemIndex().onStart { emit(0) }
+    }
 
     @Immutable
-    sealed interface Action
+    sealed interface Action {
+        data object Refresh : Action
+    }
 
     override val title: String = "Quizzes"
     override val icons: IconPair = IconPair(
@@ -29,11 +38,8 @@ object QuizzesTab : TabComponent<QuizzesTab.Action, QuizzesTab.State> {
 
     @Composable
     @NonRestartableComposable
-    override fun Content(state: State, onAction: (Action) -> Unit) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Quizzes")
-        }
-    }
+    override fun Content(state: State, onAction: (Action) -> Unit) =
+        QuizzesTabScreenContent(state, onAction)
 
     @Composable
     override fun model(): QuizzesTabModel = getScreenModel()

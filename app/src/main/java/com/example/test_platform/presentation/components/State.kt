@@ -43,7 +43,7 @@ fun ErrorState(modifier: Modifier, onRetry: () -> Unit) {
             shape = RoundedCornerShape(8.dp),
             enabled = true,
             colors = ButtonDefaults.buttonColors().copy(
-                containerColor = QuizTheme.blue2,
+                containerColor = QuizTheme.red,
                 contentColor = Color.White,
             ),
         )
@@ -51,9 +51,25 @@ fun ErrorState(modifier: Modifier, onRetry: () -> Unit) {
 }
 
 @Composable
-fun EmptyState(modifier: Modifier) {
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+fun EmptyState(modifier: Modifier, onRetry: () -> Unit) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Text(text = "Not found", color = Color.Black, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+            onClick = onRetry,
+            content = { Text(text = "Retry", color = Color.White) },
+            shape = RoundedCornerShape(8.dp),
+            enabled = true,
+            colors = ButtonDefaults.buttonColors().copy(
+                containerColor = QuizTheme.blue2,
+                contentColor = Color.White,
+            ),
+        )
     }
 }
 
@@ -86,7 +102,7 @@ fun StubState(
         when (targetStub) {
             Stub.Loading -> LoadState(modifier)
             Stub.Error -> ErrorState(modifier, onRetry)
-            Stub.Empty -> EmptyState(modifier)
+            Stub.Empty -> EmptyState(modifier, onRetry)
             Stub.Loaded -> loadedContent()
         }
     }

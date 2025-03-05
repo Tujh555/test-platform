@@ -38,5 +38,5 @@ class ApiProvider {
     fun profileApi(retrofit: Retrofit): ProfileApi = ProfileApi.Mock
 
     @Provides
-    fun quizApi(retrofit: Retrofit): QuizApi = QuizApi.Mock
+    fun quizApi(retrofit: Retrofit): QuizApi = QuizApi()
 }
