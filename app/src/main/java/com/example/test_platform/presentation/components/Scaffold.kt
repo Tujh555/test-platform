@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -55,20 +54,23 @@ fun Scaffold(
     Scaffold(
         modifier = modifier,
         topPadding = topPadding,
-        appBar = {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (isBackVisible) {
-                    BackButton(onClick = back)
-                }
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = title,
-                    fontSize = 32.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        },
+        appBar = { AppBar(title = title, isBackVisible = isBackVisible, back = back) },
         content = content
     )
+}
+
+@Composable
+fun AppBar(modifier: Modifier = Modifier, title: String, isBackVisible: Boolean, back: () -> Unit) {
+    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        if (isBackVisible) {
+            BackButton(onClick = back)
+        }
+        Text(
+            modifier = Modifier.weight(1f),
+            text = title,
+            fontSize = 32.sp,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }

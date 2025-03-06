@@ -4,5 +4,9 @@ data class Question(
     val id: String,
     val text: String,
     val variants: List<Answer>,
-    val answers: List<Answer>
-)
+    val type: Type
+) {
+    enum class Type {
+        Multiple, Single
+    }
+}

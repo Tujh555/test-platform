@@ -2,7 +2,6 @@ package com.example.test_platform.presentation.screens.quiz.create.sub
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +18,6 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -27,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,26 +32,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastMap
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import com.example.test_platform.R
+import com.example.test_platform.domain.test.Question
 import com.example.test_platform.presentation.base.sub.SubScreen
-import com.example.test_platform.presentation.screens.quiz.create.RawAnswer
-import com.example.test_platform.presentation.screens.quiz.create.RawQuestion
+import com.example.test_platform.presentation.screens.quiz.create.models.RawAnswer
+import com.example.test_platform.presentation.screens.quiz.create.models.RawQuestion
 import com.example.test_platform.presentation.theme.QuizTheme
 
-private val tfShape = RoundedCornerShape(4.dp)
+val tfShape = RoundedCornerShape(4.dp)
 
 private class QuestionCreateSubScreen : SubScreen<RawQuestion> {
+    override val key: ScreenKey = uniqueScreenKey
     override var state: RawQuestion by mutableStateOf(RawQuestion())
         private set
 
     @Composable
     override fun Content() {
-        var isSingleAnswer by remember { mutableStateOf(false) }
-
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item("title") {
                 Row(
@@ -77,10 +75,11 @@ private class QuestionCreateSubScreen : SubScreen<RawQuestion> {
                     )
 
                     Checkbox(
-                        checked = isSingleAnswer.not(),
+                        modifier = Modifier.size(32.dp),
+                        checked = state.type.multiple(),
                         onCheckedChange = {
-                            isSingleAnswer = false
                             state = state.copy(
+                                type = Question.Type.Multiple,
                                 answers = state.answers.fastMap { it.copy(marked = false) }
                             )
                         },
@@ -91,10 +90,11 @@ private class QuestionCreateSubScreen : SubScreen<RawQuestion> {
                     )
 
                     RadioButton(
-                        selected = isSingleAnswer,
+                        modifier = Modifier.size(32.dp),
+                        selected = state.type.single(),
                         onClick = {
-                            isSingleAnswer = true
                             state = state.copy(
+                                type = Question.Type.Single,
                                 answers = state.answers.fastMap { it.copy(marked = false) }
                             )
                         },
@@ -119,36 +119,6 @@ private class QuestionCreateSubScreen : SubScreen<RawQuestion> {
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (isSingleAnswer) {
-                        RadioButton(
-                            selected = answer.marked,
-                            onClick = {
-                                val updated = state.answers.fastMap { old ->
-                                    if (old.id == answer.id) {
-                                        old.copy(marked = true)
-                                    } else {
-                                        old.copy(marked = false)
-                                    }
-                                }
-                                state = state.copy(answers = updated)
-                            },
-                            colors = RadioButtonDefaults.colors().copy(selectedColor = QuizTheme.blue2)
-                        )
-                    } else {
-                        Checkbox(
-                            checked = answer.marked,
-                            onCheckedChange = { checked ->
-                                val updated = state.answers
-                                    .update(answer.id) { it.copy(marked = checked) }
-                                state = state.copy(answers = updated)
-                            },
-                            colors = CheckboxDefaults.colors().copy(
-                                checkedBoxColor = QuizTheme.blue2,
-                                checkedBorderColor = QuizTheme.blue2
-                            )
-                        )
-                    }
-
                     OutlinedTextField(
                         modifier = Modifier.weight(1f),
                         value = answer.text,
@@ -165,6 +135,38 @@ private class QuestionCreateSubScreen : SubScreen<RawQuestion> {
                         },
                         shape = tfShape,
                     )
+
+                    if (state.type.single()) {
+                        RadioButton(
+                            modifier = Modifier.size(32.dp),
+                            selected = answer.marked,
+                            onClick = {
+                                val updated = state.answers.fastMap { old ->
+                                    if (old.id == answer.id) {
+                                        old.copy(marked = true)
+                                    } else {
+                                        old.copy(marked = false)
+                                    }
+                                }
+                                state = state.copy(answers = updated)
+                            },
+                            colors = RadioButtonDefaults.colors().copy(selectedColor = QuizTheme.blue2)
+                        )
+                    } else {
+                        Checkbox(
+                            modifier = Modifier.size(32.dp),
+                            checked = answer.marked,
+                            onCheckedChange = { checked ->
+                                val updated = state.answers
+                                    .update(answer.id) { it.copy(marked = checked) }
+                                state = state.copy(answers = updated)
+                            },
+                            colors = CheckboxDefaults.colors().copy(
+                                checkedBoxColor = QuizTheme.blue2,
+                                checkedBorderColor = QuizTheme.blue2
+                            )
+                        )
+                    }
 
                     Icon(
                         modifier = Modifier
@@ -206,6 +208,10 @@ private class QuestionCreateSubScreen : SubScreen<RawQuestion> {
         }
     }
 
+    private fun Question.Type.single() = this == Question.Type.Single
+
+    private fun Question.Type.multiple() = this == Question.Type.Multiple
+
     private inline fun List<RawAnswer>.update(id: String, block: (RawAnswer) -> RawAnswer) =
         fastMap { answer ->
             if (answer.id == id) {
@@ -216,20 +222,5 @@ private class QuestionCreateSubScreen : SubScreen<RawQuestion> {
         }
 }
 
-@Composable
-@Preview
-private fun Preview() {
-    val screen = QuestionCreateScreen()
-    MaterialTheme {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(24.dp)
-        ) {
-            screen.Content()
-        }
-    }
-}
-
 @Suppress("FunctionName")
-fun QuestionCreateScreen(): SubScreen<RawQuestion> = QuestionCreateSubScreen()
+fun QuestionCreateScreen(i: Int): SubScreen<RawQuestion> = QuestionCreateSubScreen()

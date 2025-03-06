@@ -11,20 +11,24 @@ class QuestionDto(
     val text: String?,
     @SerializedName("variants")
     val variants: List<AnswerDto>?,
-    @SerializedName("answers")
-    val answers: List<AnswerDto>?
+    @SerializedName("type")
+    val type: String?
 )
+
+private fun String?.asQuestionType() = Question.Type.entries
+    .firstOrNull { it.name.lowercase() == this }
+    ?: Question.Type.Multiple
 
 fun QuestionDto.toDomain() = Question(
     id = id,
     text = text.orEmpty(),
     variants = variants.orEmpty().map(AnswerDto::toDomain),
-    answers = answers.orEmpty().map(AnswerDto::toDomain)
+    type = type.asQuestionType()
 )
 
 fun Question.toDto() = QuestionDto(
     id = id,
     text = text,
     variants = variants.map(Answer::toDto),
-    answers = answers.map(Answer::toDto)
+    type = type.name.lowercase()
 )

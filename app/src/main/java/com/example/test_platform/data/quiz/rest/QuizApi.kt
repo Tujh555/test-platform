@@ -3,7 +3,10 @@ package com.example.test_platform.data.quiz.rest
 import com.example.test_platform.data.dto.QuizDto
 import com.example.test_platform.data.dto.UserDto
 import kotlinx.coroutines.delay
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 import java.time.Instant
 import java.util.UUID
@@ -28,6 +31,12 @@ interface QuizApi {
         @Query("limit") limit: Int,
         @Query("cursor") cursor: String
     ): Result<List<QuizDto>>
+
+    @PUT("quizzes/register")
+    suspend fun register(@Body body: RegisterQuizRequest): Result<Unit>
+
+    @POST("quizzes/solve")
+    suspend fun solve(@Body body: SolveQuizRequest): Result<Map<String, Boolean>>
 
     companion object {
         operator fun invoke(): QuizApi = object : QuizApi {
@@ -81,6 +90,16 @@ interface QuizApi {
                 val count = if (ownLoaded >= pagesLimit) limit / 2 else limit
                 ownLoaded++
                 return Result.success(list(count))
+            }
+
+            override suspend fun solve(body: SolveQuizRequest): Result<Map<String, Boolean>> {
+                delay(2000)
+                return Result.success(emptyMap())
+            }
+
+            override suspend fun register(body: RegisterQuizRequest): Result<Unit> {
+                delay(2000)
+                return Result.success(Unit)
             }
         }
     }

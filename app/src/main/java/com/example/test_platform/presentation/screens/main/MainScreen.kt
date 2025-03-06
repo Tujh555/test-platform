@@ -1,5 +1,7 @@
 package com.example.test_platform.presentation.screens.main
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -17,11 +19,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.example.test_platform.presentation.LocalRootNavigator
 import com.example.test_platform.presentation.components.tabs.BottomNavigationBar
 import com.example.test_platform.presentation.screens.main.home.HomeTab
 import com.example.test_platform.presentation.screens.main.profile.ProfileTab
 import com.example.test_platform.presentation.screens.main.quizzes.QuizzesTab
 import com.example.test_platform.presentation.screens.main.search.SearchTab
+import com.example.test_platform.presentation.screens.quiz.create.QuizCreateScreen
 
 val LocalBottomBarHeight = compositionLocalOf { 0.dp }
 
@@ -37,9 +41,15 @@ class MainScreen : Screen {
                     CurrentTab()
                 }
                 val density = LocalDensity.current
+                val navigator = LocalRootNavigator.current
                 BottomNavigationBar(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = {}
+                        )
                         .onSizeChanged { size ->
                             val height = with(density) { size.height.toDp() }
                             if (bottomBarHeight != height) {
@@ -47,7 +57,7 @@ class MainScreen : Screen {
                             }
                         },
                     tabs = tabs,
-                    onFabClick = {  }
+                    onFabClick = { navigator.push(QuizCreateScreen()) }
                 )
             }
         }
