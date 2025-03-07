@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,16 +39,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.test_platform.presentation.LocalRootNavigator
 import com.example.test_platform.presentation.components.AuthoredQuizCard
 import com.example.test_platform.presentation.components.StubState
 import com.example.test_platform.presentation.components.screenPadding
 import com.example.test_platform.presentation.screens.main.LocalBottomBarHeight
 import com.example.test_platform.presentation.screens.main.home.bottomShape
+import com.example.test_platform.presentation.screens.quiz.solve.QuizSolveScreen
 import com.example.test_platform.presentation.screens.signup.onCreamTextFieldColors
 import com.example.test_platform.presentation.theme.QuizTheme
 
 @Composable
 fun SearchScreenContent(state: SearchTab.State, onAction: (SearchTab.Action) -> Unit) {
+
+    LaunchedEffect(Unit) {
+        onAction(SearchTab.Action.Refresh(true))
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -115,8 +123,9 @@ fun SearchScreenContent(state: SearchTab.State, onAction: (SearchTab.Action) -> 
             StubState(
                 modifier = Modifier.fillMaxSize(),
                 stub = state.stub,
-                onRetry = { onAction(SearchTab.Action.Refresh) }
+                onRetry = { onAction(SearchTab.Action.Refresh(false)) }
             ) {
+                val navigator = LocalRootNavigator.current
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -130,7 +139,7 @@ fun SearchScreenContent(state: SearchTab.State, onAction: (SearchTab.Action) -> 
                         AuthoredQuizCard(
                             modifier = Modifier.fillMaxWidth(),
                             quiz = quiz,
-                            onClick = {}
+                            onClick = { navigator.push(QuizSolveScreen(quiz)) }
                         )
                     }
 

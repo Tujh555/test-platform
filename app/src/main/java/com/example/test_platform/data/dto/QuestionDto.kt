@@ -16,7 +16,7 @@ class QuestionDto(
 )
 
 private fun String?.asQuestionType() = Question.Type.entries
-    .firstOrNull { it.name.lowercase() == this }
+    .firstOrNull { it.name.equals(other = this, ignoreCase = true) }
     ?: Question.Type.Multiple
 
 fun QuestionDto.toDomain() = Question(

@@ -136,36 +136,43 @@ private class QuestionCreateSubScreen : SubScreen<RawQuestion> {
                         shape = tfShape,
                     )
 
-                    if (state.type.single()) {
-                        RadioButton(
-                            modifier = Modifier.size(32.dp),
-                            selected = answer.marked,
-                            onClick = {
-                                val updated = state.answers.fastMap { old ->
-                                    if (old.id == answer.id) {
-                                        old.copy(marked = true)
-                                    } else {
-                                        old.copy(marked = false)
+                    when (state.type) {
+                        Question.Type.Multiple -> {
+                            Checkbox(
+                                modifier = Modifier.size(32.dp),
+                                checked = answer.marked,
+                                onCheckedChange = { checked ->
+                                    val updated = state.answers.update(answer.id) {
+                                        it.copy(marked = checked)
                                     }
-                                }
-                                state = state.copy(answers = updated)
-                            },
-                            colors = RadioButtonDefaults.colors().copy(selectedColor = QuizTheme.blue2)
-                        )
-                    } else {
-                        Checkbox(
-                            modifier = Modifier.size(32.dp),
-                            checked = answer.marked,
-                            onCheckedChange = { checked ->
-                                val updated = state.answers
-                                    .update(answer.id) { it.copy(marked = checked) }
-                                state = state.copy(answers = updated)
-                            },
-                            colors = CheckboxDefaults.colors().copy(
-                                checkedBoxColor = QuizTheme.blue2,
-                                checkedBorderColor = QuizTheme.blue2
+                                    state = state.copy(answers = updated)
+                                },
+                                colors = CheckboxDefaults.colors().copy(
+                                    checkedBoxColor = QuizTheme.blue2,
+                                    checkedBorderColor = QuizTheme.blue2
+                                )
                             )
-                        )
+                        }
+
+                        Question.Type.Single -> {
+                            RadioButton(
+                                modifier = Modifier.size(32.dp),
+                                selected = answer.marked,
+                                onClick = {
+                                    val updated = state.answers.fastMap { old ->
+                                        if (old.id == answer.id) {
+                                            old.copy(marked = true)
+                                        } else {
+                                            old.copy(marked = false)
+                                        }
+                                    }
+                                    state = state.copy(answers = updated)
+                                },
+                                colors = RadioButtonDefaults.colors().copy(
+                                    selectedColor = QuizTheme.blue2
+                                )
+                            )
+                        }
                     }
 
                     Icon(

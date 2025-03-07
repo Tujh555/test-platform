@@ -35,14 +35,18 @@ class HomeTabModel @Inject constructor(
 
     override fun onAction(action: HomeTab.Action) {
         when (action) {
-            HomeTab.Action.RefreshAll -> screenModelScope.launch {
-                update { state -> state.copy(allStub = Stub.Loading) }
-                delay(500)
+            is HomeTab.Action.RefreshAll -> screenModelScope.launch {
+                if (action.silent.not()) {
+                    update { state -> state.copy(allStub = Stub.Loading) }
+                    delay(500)
+                }
                 allPager.refresh()
             }
-            HomeTab.Action.RefreshOwn -> screenModelScope.launch {
-                update { state -> state.copy(ownStub = Stub.Loading) }
-                delay(500)
+            is HomeTab.Action.RefreshOwn -> screenModelScope.launch {
+                if (action.silent.not()) {
+                    update { state -> state.copy(ownStub = Stub.Loading) }
+                    delay(500)
+                }
                 ownPager.refresh()
             }
         }

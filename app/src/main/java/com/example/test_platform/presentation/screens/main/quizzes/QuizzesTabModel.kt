@@ -28,8 +28,10 @@ class QuizzesTabModel @Inject constructor(
 
     override fun onAction(action: QuizzesTab.Action) {
         when (action) {
-            QuizzesTab.Action.Refresh -> {
-                update { state -> state.copy(stub = Stub.Loading) }
+            is QuizzesTab.Action.Refresh -> {
+                if (action.silent.not()) {
+                    update { state -> state.copy(stub = Stub.Loading) }
+                }
 
                 screenModelScope.launch {
                     pager.refresh()

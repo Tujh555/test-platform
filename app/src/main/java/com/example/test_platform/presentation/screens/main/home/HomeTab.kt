@@ -3,10 +3,11 @@ package com.example.test_platform.presentation.screens.main.home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.NonRestartableComposable
-import cafe.adriel.voyager.hilt.getScreenModel
+import cafe.adriel.voyager.hilt.getNavigatorScreenModel
 import com.example.test_platform.R
 import com.example.test_platform.domain.test.Quiz
 import com.example.test_platform.domain.user.User
+import com.example.test_platform.presentation.LocalRootNavigator
 import com.example.test_platform.presentation.base.IconPair
 import com.example.test_platform.presentation.base.StateTabComponent
 import com.example.test_platform.presentation.components.Stub
@@ -23,8 +24,10 @@ object HomeTab : StateTabComponent<HomeTab.Action, HomeTab.State> {
 
     @Immutable
     sealed interface Action {
-        data object RefreshAll : Action
-        data object RefreshOwn : Action
+        @JvmInline
+        value class RefreshAll(val silent: Boolean) : Action
+        @JvmInline
+        value class RefreshOwn(val silent: Boolean) : Action
     }
 
     override val title: String = "Home"
@@ -39,7 +42,7 @@ object HomeTab : StateTabComponent<HomeTab.Action, HomeTab.State> {
         HomeTabContent(state, onAction)
 
     @Composable
-    override fun model(): HomeTabModel = getScreenModel()
+    override fun model(): HomeTabModel = LocalRootNavigator.current.getNavigatorScreenModel()
 
     private fun readResolve(): Any = HomeTab
 }

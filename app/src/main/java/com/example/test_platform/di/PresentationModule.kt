@@ -1,12 +1,15 @@
 package com.example.test_platform.di
 
 import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.hilt.ScreenModelFactory
+import cafe.adriel.voyager.hilt.ScreenModelFactoryKey
 import cafe.adriel.voyager.hilt.ScreenModelKey
 import com.example.test_platform.presentation.screens.main.home.HomeTabModel
 import com.example.test_platform.presentation.screens.main.profile.ProfileTabModel
 import com.example.test_platform.presentation.screens.main.quizzes.QuizzesTabModel
 import com.example.test_platform.presentation.screens.main.search.SearchTabModel
 import com.example.test_platform.presentation.screens.quiz.create.QuizCreateModel
+import com.example.test_platform.presentation.screens.quiz.solve.QuizSolveModel
 import com.example.test_platform.presentation.screens.signin.SignInModel
 import com.example.test_platform.presentation.screens.signup.SignUpModel
 import com.example.test_platform.presentation.screens.splash.SplashModel
@@ -58,4 +61,9 @@ interface PresentationModule {
     @IntoMap
     @ScreenModelKey(QuizCreateModel::class)
     fun create(model: QuizCreateModel): ScreenModel
+
+    @Binds
+    @IntoMap
+    @ScreenModelFactoryKey(QuizSolveModel.Factory::class)
+    fun solveFactory(factory: QuizSolveModel.Factory): ScreenModelFactory
 }

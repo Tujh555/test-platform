@@ -4,9 +4,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.NonRestartableComposable
-import cafe.adriel.voyager.hilt.getScreenModel
+import cafe.adriel.voyager.hilt.getNavigatorScreenModel
 import com.example.test_platform.R
 import com.example.test_platform.domain.test.Quiz
+import com.example.test_platform.presentation.LocalRootNavigator
 import com.example.test_platform.presentation.base.IconPair
 import com.example.test_platform.presentation.base.StateTabComponent
 import com.example.test_platform.presentation.components.Stub
@@ -29,7 +30,8 @@ object SearchTab : StateTabComponent<SearchTab.Action, SearchTab.State> {
     sealed interface Action {
         @JvmInline
         value class Query(val value: String) : Action
-        data object Refresh : Action
+        @JvmInline
+        value class Refresh(val silent: Boolean) : Action
     }
 
     override val title: String = "Search"
@@ -44,7 +46,7 @@ object SearchTab : StateTabComponent<SearchTab.Action, SearchTab.State> {
         SearchScreenContent(state, onAction)
 
     @Composable
-    override fun model(): SearchTabModel = getScreenModel()
+    override fun model(): SearchTabModel = LocalRootNavigator.current.getNavigatorScreenModel()
 
     private fun readResolve(): Any = SearchTab
 }

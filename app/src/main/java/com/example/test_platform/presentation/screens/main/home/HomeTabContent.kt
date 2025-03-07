@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import com.example.test_platform.presentation.LocalRootNavigator
 import com.example.test_platform.presentation.components.AuthoredQuizCard
 import com.example.test_platform.presentation.components.OwnQuizCard
 import com.example.test_platform.presentation.components.StubState
@@ -52,6 +53,7 @@ import com.example.test_platform.presentation.components.screenPadding
 import com.example.test_platform.presentation.screens.main.LocalBottomBarHeight
 import com.example.test_platform.presentation.screens.main.profile.ProfileTab
 import com.example.test_platform.presentation.screens.main.quizzes.QuizzesTab
+import com.example.test_platform.presentation.screens.quiz.solve.QuizSolveScreen
 import com.example.test_platform.presentation.theme.QuizTheme
 import kotlin.math.absoluteValue
 
@@ -66,6 +68,11 @@ fun HomeTabContent(state: HomeTab.State, onAction: (HomeTab.Action) -> Unit) {
 
     LaunchedEffect(configuration.orientation) {
         isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    }
+
+    LaunchedEffect(Unit) {
+        onAction(HomeTab.Action.RefreshAll(true))
+        onAction(HomeTab.Action.RefreshAll(true))
     }
 
     if (isLandscape) {
@@ -134,8 +141,9 @@ private fun BottomPanel(
         StubState(
             modifier = Modifier.fillMaxSize(),
             stub = state.ownStub,
-            onRetry = { onAction(HomeTab.Action.RefreshOwn) },
+            onRetry = { onAction(HomeTab.Action.RefreshOwn(false)) },
         ) {
+            val navigator = LocalRootNavigator.current
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -178,7 +186,7 @@ private fun BottomPanel(
                     OwnQuizCard(
                         modifier = Modifier.fillMaxWidth(),
                         quiz = quiz,
-                        onClick = {}
+                        onClick = { navigator.push(QuizSolveScreen(quiz)) }
                     )
                 }
             }
@@ -241,10 +249,11 @@ private fun TopPanel(
         StubState(
             modifier = Modifier.fillMaxSize().screenPadding(),
             stub = state.allStub,
-            onRetry = { onAction(HomeTab.Action.RefreshAll) },
+            onRetry = { onAction(HomeTab.Action.RefreshAll(false)) },
         ) {
             val quizzes = state.allQuizzes
             val pagerState = rememberPagerState { quizzes.size }
+            val navigator = LocalRootNavigator.current
             HorizontalPager(
                 modifier = Modifier.fillMaxSize(),
                 key = { quizzes[it].id },
@@ -273,9 +282,7 @@ private fun TopPanel(
                             )
                         },
                     quiz = quiz,
-                    onClick = {
-                        // TODO solve quiz
-                    }
+                    onClick = { navigator.push(QuizSolveScreen(quiz)) }
                 )
             }
         }

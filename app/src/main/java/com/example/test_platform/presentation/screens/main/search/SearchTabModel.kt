@@ -32,8 +32,10 @@ class SearchTabModel @Inject constructor(
     override fun onAction(action: SearchTab.Action) {
         when (action) {
             is SearchTab.Action.Query -> update { state -> state.copy(query = action.value) }
-            SearchTab.Action.Refresh -> screenModelScope.launch {
-                update { state -> state.copy(stub = Stub.Loading) }
+            is SearchTab.Action.Refresh -> screenModelScope.launch {
+                if (action.silent.not()) {
+                    update { state -> state.copy(stub = Stub.Loading) }
+                }
                 pager.refresh()
             }
         }

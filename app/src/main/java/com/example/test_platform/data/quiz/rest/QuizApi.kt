@@ -1,7 +1,11 @@
 package com.example.test_platform.data.quiz.rest
 
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import com.example.test_platform.data.dto.AnswerDto
+import com.example.test_platform.data.dto.QuestionDto
 import com.example.test_platform.data.dto.QuizDto
 import com.example.test_platform.data.dto.UserDto
+import com.example.test_platform.domain.test.Question
 import kotlinx.coroutines.delay
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -39,6 +43,9 @@ interface QuizApi {
     suspend fun solve(@Body body: SolveQuizRequest): Result<Map<String, Boolean>>
 
     companion object {
+        fun lorem(count: Int) = LoremIpsum(count).values.joinToString(separator = "")
+        fun randomId() = UUID.randomUUID().toString()
+        
         operator fun invoke(): QuizApi = object : QuizApi {
             private val pagesLimit = 10
             private var allLoaded = 0
@@ -47,17 +54,67 @@ interface QuizApi {
 
             private fun list(count: Int) = List(count) {
                 QuizDto(
-                    id = UUID.randomUUID().toString(),
+                    id = randomId(),
                     title = "Quiz title #$it",
-                    durationMinutes = nextInt(5, 100),
-                    questions = listOf(),
+                    durationMinutes = nextInt(5, 20),
+                    questions = listOf(
+                        QuestionDto(
+                            id = randomId(),
+                            text = lorem(20),
+                            variants = listOf(
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2))
+                            ),
+                            type = Question.Type.Multiple.name
+                        ),
+                        QuestionDto(
+                            id = randomId(),
+                            text = lorem(2),
+                            variants = listOf(
+                                AnswerDto(randomId(), lorem(4)),
+                                AnswerDto(randomId(), lorem(4)),
+                                AnswerDto(randomId(), lorem(4))
+                            ),
+                            type = Question.Type.Single.name
+                        ),
+                        QuestionDto(
+                            id = randomId(),
+                            text = lorem(20),
+                            variants = listOf(
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2))
+                            ),
+                            type = Question.Type.Multiple.name
+                        ),
+                        QuestionDto(
+                            id = randomId(),
+                            text = lorem(20),
+                            variants = listOf(
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                                AnswerDto(randomId(), lorem(2)),
+                            ),
+                            type = Question.Type.Multiple.name
+                        )
+                    ),
                     author = UserDto(
-                        id = UUID.randomUUID().toString(),
+                        id = randomId(),
                         avatar = null,
                         name = "User name #$it"
                     ),
                     solvedCount = 10,
-                    lastSolvers = List(nextInt(0, 5)) { i ->
+                    lastSolvers = List(nextInt(0, 3)) { i ->
                         UserDto(
                             id = UUID.randomUUID().toString(),
                             avatar = null,

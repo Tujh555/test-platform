@@ -6,5 +6,5 @@ class SolveQuizRequest(
     @SerializedName("id")
     val id: String,
     @SerializedName("answers")
-    val answers: Map<String, List<String>>
+    val answers: Map<String, Iterable<String>>
 )

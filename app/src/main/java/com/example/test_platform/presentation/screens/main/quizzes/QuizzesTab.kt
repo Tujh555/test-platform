@@ -4,9 +4,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.NonRestartableComposable
-import cafe.adriel.voyager.hilt.getScreenModel
+import cafe.adriel.voyager.hilt.getNavigatorScreenModel
 import com.example.test_platform.R
 import com.example.test_platform.domain.test.Quiz
+import com.example.test_platform.presentation.LocalRootNavigator
 import com.example.test_platform.presentation.base.IconPair
 import com.example.test_platform.presentation.base.StateTabComponent
 import com.example.test_platform.presentation.components.Stub
@@ -27,7 +28,8 @@ object QuizzesTab : StateTabComponent<QuizzesTab.Action, QuizzesTab.State> {
 
     @Immutable
     sealed interface Action {
-        data object Refresh : Action
+        @JvmInline
+        value class Refresh(val silent: Boolean) : Action
     }
 
     override val title: String = "Quizzes"
@@ -42,7 +44,8 @@ object QuizzesTab : StateTabComponent<QuizzesTab.Action, QuizzesTab.State> {
         QuizzesTabScreenContent(state, onAction)
 
     @Composable
-    override fun model(): QuizzesTabModel = getScreenModel()
+    // TODO silent refersh
+    override fun model(): QuizzesTabModel = LocalRootNavigator.current.getNavigatorScreenModel()
 
     private fun readResolve(): Any = QuizzesTab
 }

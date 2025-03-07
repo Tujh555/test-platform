@@ -7,5 +7,5 @@ class RegisterQuizRequest(
     @SerializedName("quiz")
     val quiz: QuizDto,
     @SerializedName("right_answers")
-    val rightAnswers: Map<Int, List<Int>>
+    val rightAnswers: Map<Int, Iterable<Int>>
 )

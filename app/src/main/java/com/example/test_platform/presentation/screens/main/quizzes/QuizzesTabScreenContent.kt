@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,15 +24,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.test_platform.presentation.LocalRootNavigator
 import com.example.test_platform.presentation.components.OwnQuizCard
 import com.example.test_platform.presentation.components.StubState
 import com.example.test_platform.presentation.components.screenPadding
 import com.example.test_platform.presentation.screens.main.LocalBottomBarHeight
 import com.example.test_platform.presentation.screens.main.home.bottomShape
+import com.example.test_platform.presentation.screens.quiz.solve.QuizSolveScreen
 import com.example.test_platform.presentation.theme.QuizTheme
 
 @Composable
 fun QuizzesTabScreenContent(state: QuizzesTab.State, onAction: (QuizzesTab.Action) -> Unit) {
+    LaunchedEffect(Unit) {
+        onAction(QuizzesTab.Action.Refresh(true))
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,8 +64,9 @@ fun QuizzesTabScreenContent(state: QuizzesTab.State, onAction: (QuizzesTab.Actio
             StubState(
                 modifier = Modifier.fillMaxSize().screenPadding(),
                 stub = state.stub,
-                onRetry = { onAction(QuizzesTab.Action.Refresh) }
+                onRetry = { onAction(QuizzesTab.Action.Refresh(false)) }
             ) {
+                val navigator = LocalRootNavigator.current
                 LazyColumn(
                     modifier = Modifier.fillMaxSize().screenPadding(),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -72,7 +80,7 @@ fun QuizzesTabScreenContent(state: QuizzesTab.State, onAction: (QuizzesTab.Actio
                         OwnQuizCard(
                             modifier = Modifier.fillMaxWidth(),
                             quiz = quiz,
-                            onClick = {}
+                            onClick = { navigator.push(QuizSolveScreen(quiz)) }
                         )
                     }
 
