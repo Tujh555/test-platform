@@ -137,7 +137,7 @@ fun SearchScreenContent(state: SearchTab.State, onAction: (SearchTab.Action) -> 
                 ) {
                     items(items = state.quizzes, key = { it.id }) { quiz ->
                         AuthoredQuizCard(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().animateItem(),
                             quiz = quiz,
                             onClick = { navigator.push(QuizSolveScreen(quiz)) }
                         )

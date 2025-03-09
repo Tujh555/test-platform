@@ -33,7 +33,10 @@ class QuizSolveScreen(
 
     @Immutable
     sealed interface Event {
-        class ResultScreen(val quizName: String, val result: List<Pair<Question, Boolean>>) : Event
+        data class ResultScreen(
+            val quizName: String,
+            val result: List<Pair<Question, Boolean>>
+        ) : Event
     }
 
     @Composable

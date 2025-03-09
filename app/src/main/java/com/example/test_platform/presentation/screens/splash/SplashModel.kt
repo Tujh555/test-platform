@@ -1,6 +1,5 @@
 package com.example.test_platform.presentation.screens.splash
 
-import android.util.Log
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.example.test_platform.domain.user.ReactiveUser
 import com.example.test_platform.presentation.base.StateHolder
@@ -31,7 +30,6 @@ class SplashModel @Inject constructor(
                 reactiveUser.filterNotNull().first()
             }
         }
-        Log.d("--tag", "user = $user")
         update { user != null }
     }
 }

@@ -33,9 +33,7 @@ class QuizzesTabModel @Inject constructor(
                     update { state -> state.copy(stub = Stub.Loading) }
                 }
 
-                screenModelScope.launch {
-                    pager.refresh()
-                }
+                screenModelScope.launch { pager.refresh() }
             }
         }
     }

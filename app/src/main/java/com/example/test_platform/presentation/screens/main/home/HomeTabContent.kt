@@ -72,7 +72,7 @@ fun HomeTabContent(state: HomeTab.State, onAction: (HomeTab.Action) -> Unit) {
 
     LaunchedEffect(Unit) {
         onAction(HomeTab.Action.RefreshAll(true))
-        onAction(HomeTab.Action.RefreshAll(true))
+        onAction(HomeTab.Action.RefreshOwn(true))
     }
 
     if (isLandscape) {
@@ -184,7 +184,7 @@ private fun BottomPanel(
                     key = { it.id },
                 ) { quiz ->
                     OwnQuizCard(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().animateItem(),
                         quiz = quiz,
                         onClick = { navigator.push(QuizSolveScreen(quiz)) }
                     )

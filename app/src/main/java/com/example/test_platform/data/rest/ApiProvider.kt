@@ -11,6 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -24,7 +25,7 @@ class ApiProvider {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl("http://192.168.124.214:8080/")
+            .baseUrl("http://10.0.2.2:8080/")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(ResultAdapterFactory())
             .client(client)
@@ -32,11 +33,11 @@ class ApiProvider {
     }
 
     @Provides
-    fun authApi(retrofit: Retrofit): AuthApi = AuthApi.Mock
+    fun authApi(retrofit: Retrofit): AuthApi = retrofit.create()
 
     @Provides
-    fun profileApi(retrofit: Retrofit): ProfileApi = ProfileApi.Mock
+    fun profileApi(retrofit: Retrofit): ProfileApi = retrofit.create()
 
     @Provides
-    fun quizApi(retrofit: Retrofit): QuizApi = QuizApi()
+    fun quizApi(retrofit: Retrofit): QuizApi = retrofit.create()
 }

@@ -78,7 +78,7 @@ fun QuizzesTabScreenContent(state: QuizzesTab.State, onAction: (QuizzesTab.Actio
                 ) {
                     items(items = state.quizzes, key = { it.id }) { quiz ->
                         OwnQuizCard(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().animateItem(),
                             quiz = quiz,
                             onClick = { navigator.push(QuizSolveScreen(quiz)) }
                         )
@@ -87,7 +87,7 @@ fun QuizzesTabScreenContent(state: QuizzesTab.State, onAction: (QuizzesTab.Actio
                     if (state.adding) {
                         item("loader") {
                             Box(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth().animateItem(),
                                 contentAlignment = Alignment.Center
                             ) {
                                 CircularProgressIndicator(

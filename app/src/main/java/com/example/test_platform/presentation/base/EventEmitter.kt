@@ -11,7 +11,7 @@ interface EventEmitter<E> {
 }
 
 fun <E> EventEmitter(): EventEmitter<E> = object : EventEmitter<E> {
-    private val _event = Channel<E>(Channel.UNLIMITED)
+    private val _event = Channel<E>(Channel.CONFLATED)
     override val event = _event.receiveAsFlow()
 
     override suspend fun emit(event: E) = _event.send(event)

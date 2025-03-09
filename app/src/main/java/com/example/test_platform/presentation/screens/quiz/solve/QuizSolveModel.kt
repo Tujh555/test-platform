@@ -47,7 +47,7 @@ class QuizSolveModel @AssistedInject constructor(
     private fun finish() {
         update { state -> state.copy(finishInProgress = true) }
         val solvingQuestions = state.value.solveScreens.map(SubScreen<SolvingQuestion>::state)
-        val answersMap = solvingQuestions.associate { it.underlying.id to it.markedAnswers }
+        val answersMap = solvingQuestions.associate { it.underlying.id to it.markedAnswers.toList() }
 
         screenModelScope.io {
             repository

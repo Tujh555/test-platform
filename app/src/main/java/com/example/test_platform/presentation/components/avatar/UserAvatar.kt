@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -22,7 +23,6 @@ fun UserAvatar(
     onClick: (() -> Unit)? = null
 ) {
     val targetUrl = url ?: "file:///android_asset/avatar_${userId.uuidIndex() % 50 + 1}.webp"
-
     AsyncImage(
         modifier = modifier
             .clip(shape)
@@ -33,6 +33,7 @@ fun UserAvatar(
             .crossfade(true)
             .build(),
         contentDescription = null,
+        contentScale = ContentScale.Crop,
     )
 }
 

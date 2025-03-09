@@ -31,7 +31,6 @@ val LocalRootNavigator = staticCompositionLocalOf<Navigator> {
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     @Inject
     lateinit var handler: Handler
 

@@ -3,6 +3,7 @@ package com.example.test_platform.data.user
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import com.example.test_platform.data.dto.UserDto
@@ -51,7 +52,8 @@ class ProfileRepositoryImpl @Inject constructor(
 
         return api
             .uploadAvatar(part)
-            .onSuccess { url -> user.value?.copy(avatar = url)?.let { store.update(it) } }
+            .also { Log.d("--tag", "--> url = $it") }
+            .onSuccess { url -> user.value?.copy(avatar = url.url)?.let { store.update(it) } }
             .map()
     }
 

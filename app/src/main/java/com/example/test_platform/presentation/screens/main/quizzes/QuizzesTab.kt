@@ -44,7 +44,6 @@ object QuizzesTab : StateTabComponent<QuizzesTab.Action, QuizzesTab.State> {
         QuizzesTabScreenContent(state, onAction)
 
     @Composable
-    // TODO silent refersh
     override fun model(): QuizzesTabModel = LocalRootNavigator.current.getNavigatorScreenModel()
 
     private fun readResolve(): Any = QuizzesTab
