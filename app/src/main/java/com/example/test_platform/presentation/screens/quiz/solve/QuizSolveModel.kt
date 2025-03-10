@@ -16,6 +16,7 @@ import com.example.test_platform.timer
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -65,8 +66,10 @@ class QuizSolveModel @AssistedInject constructor(
     private fun launchTimer() {
         timer(quiz.durationMinutes.minutes, 1.seconds)
             .onEach { remaining -> update { state -> state.copy(remainingTime = remaining) } }
-            .onCompletion {
-                if (state.value.finishInProgress.not()) {
+            .onCompletion { cause ->
+                val alreadyFinishing = state.value.finishInProgress
+                val isCancelled = cause is CancellationException
+                if (alreadyFinishing.not() && isCancelled.not()) {
                     finish()
                 }
             }
